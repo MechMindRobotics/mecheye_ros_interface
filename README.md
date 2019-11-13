@@ -1,6 +1,6 @@
-Mech-Eye ROS Driver
+Mech-Eye ROS Interface
 ====================
-Official ROS driver for Mech-Eye cameras.
+Official ROS interface for Mech-Eye cameras.
 
 <http://www.mech-mind.net/>
 

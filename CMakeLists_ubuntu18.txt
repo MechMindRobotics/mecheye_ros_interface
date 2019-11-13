@@ -1,0 +1,71 @@
+project (mecheye_open_interface)
+cmake_minimum_required(VERSION 3.5)
+
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+else()
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
+
+set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_CXX_COMPILER $ENV{CXX})
+
+#SET("OpenCV_DIR" "3rdparty/opencv4/lib/cmake/opencv4")
+
+
+find_package(PCL REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(Boost REQUIRED)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ZMQ REQUIRED libzmq)
+#pkg_check_modules(PROTOBUF REQUIRED protobuf)
+
+
+## Find catkin and any catkin packages
+find_package(catkin REQUIRED COMPONENTS cv_bridge image_transport roscpp rospy std_msgs genmsg sensor_msgs tf)
+
+## Declare ROS messages and services
+
+## Generate added messages and services
+#generate_messages(DEPENDENCIES std_msgs
+
+## Declare a catkin package
+catkin_package()
+
+
+include_directories(
+    proto
+    include
+    3rdparty/protobuf/include
+    #3rdparty/libzmq/include
+    ${PCL_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
+    ${ZMQ_INCLUDE_DIRS}
+    ${PROTOBUF_INCLUDE_DIRS}
+    ${EIGEN_INCLUDE_DIRS}
+    ${BOOST_INCLUDE_DIRS}
+    ${catkin_INCLUDE_DIRS}
+    )
+
+aux_source_directory(src SRC_LIST)
+aux_source_directory(proto SRC_PROTO_LIST)
+add_executable(start ${SRC_LIST} ${SRC_PROTO_LIST})
+target_link_libraries(start
+    ${PCL_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    ${ZMQ_LIBRARIES}
+    ${EIGEN_LIBRARIES}
+    ${BOOST_LIBRARIES}
+    ${catkin_LIBRARIES}
+    /home/liang/code/eye_ws/src/mecheye_open_interface/3rdparty/protobuf/lib/libprotobuf.so
+    #/homeL/lhz/code/eye_ws/src/mecheye_open_interface/3rdparty/libzmq/lib/libzmq.so
+    )
+

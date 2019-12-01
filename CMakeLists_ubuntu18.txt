@@ -1,4 +1,4 @@
-project (mecheye_open_interface)
+project (mecheye_ros_interface)
 cmake_minimum_required(VERSION 3.5)
 
 include(CheckCXXCompilerFlag)

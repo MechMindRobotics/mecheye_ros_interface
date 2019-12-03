@@ -24,8 +24,7 @@ Official ROS interface for Mech-Eye cameras.
 - Build with CMake.
 - Run with one Mech-Eye camera.
 
-
-Note that `/homeL/lhz` will be changed to your home dir manually in `CMakeList.txt`.
+Note: please change `/homeL/lhz/code/eye_ws/src/mecheye_ros_interface` below to the actuall path where you put this ROS package.
 
 ## ZeroMQ install guide
 - `sudo apt install libzmq5 libzmq3-dev` (only work for ubuntu 18.04)

@@ -65,6 +65,6 @@ target_link_libraries(start
     ${EIGEN_LIBRARIES}
     ${BOOST_LIBRARIES}
     ${catkin_LIBRARIES}
-    /homeL/lhz/code/eye_ws/src/mecheye_ros_interface/3rdparty/protobuf/lib/libprotobuf.so
-    /homeL/lhz/code/eye_ws/src/mecheye_ros_interface/3rdparty/libzmq/lib/libzmq.so
+    ${PROJECT_SOURCE_DIR}/3rdparty/protobuf/lib/libprotobuf.so
+    ${PROJECT_SOURCE_DIR}/3rdparty/libzmq/lib/libzmq.so
     )

@@ -1,4 +1,4 @@
-project (mecheye_open_interface)
+project (mecheye_ros_interface)
 cmake_minimum_required(VERSION 3.5)
 
 include(CheckCXXCompilerFlag)
@@ -65,7 +65,5 @@ target_link_libraries(start
     ${EIGEN_LIBRARIES}
     ${BOOST_LIBRARIES}
     ${catkin_LIBRARIES}
-    /home/liang/code/eye_ws/src/mecheye_open_interface/3rdparty/protobuf/lib/libprotobuf.so
-    #/homeL/lhz/code/eye_ws/src/mecheye_open_interface/3rdparty/libzmq/lib/libzmq.so
+    ${PROJECT_SOURCE_DIR}/3rdparty/protobuf/lib/libprotobuf.so
     )
-

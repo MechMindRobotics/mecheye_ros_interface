@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>mecheye_open_interface</name>
+  <name>mecheye_ros_interface</name>
   <version>0.0.1</version>
-  <description>mecheye_open_interface package for Mechmind 3D camera, modify from the official API from Mechmind</description>
+  <description>mecheye_ros_interface package for Mechmind 3D camera, modify from the official API from Mechmind</description>
 
   <maintainer email="liang@informatik.uni-hamburg.de">Hongzhuo Liang</maintainer>
   <license>MIT</license>

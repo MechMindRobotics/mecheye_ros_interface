@@ -23,19 +23,12 @@ find_package(PCL REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED)
-
 find_package(PkgConfig REQUIRED)
-#pkg_check_modules(ZMQ REQUIRED libzmq)
-#pkg_check_modules(PROTOBUF REQUIRED protobuf)
-
+find_package(Protobuf REQUIRED)
+pkg_check_modules(PROTOBUF REQUIRED protobuf)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS cv_bridge image_transport roscpp rospy std_msgs genmsg sensor_msgs tf)
-
-## Declare ROS messages and services
-
-## Generate added messages and services
-#generate_messages(DEPENDENCIES std_msgs
 
 ## Declare a catkin package
 catkin_package()
@@ -54,10 +47,11 @@ include_directories(
     ${BOOST_INCLUDE_DIRS}
     ${catkin_INCLUDE_DIRS}
     )
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ./proto/cameraStatus.proto ./proto/image.proto)
 
 aux_source_directory(src SRC_LIST)
-aux_source_directory(proto SRC_PROTO_LIST)
-add_executable(start ${SRC_LIST} ${SRC_PROTO_LIST})
+add_executable(start ${SRC_LIST} ${PROTO_SRCS} ${PROTO_HDRS})
 target_link_libraries(start
     ${PCL_LIBRARIES}
     ${OpenCV_LIBRARIES}
@@ -65,6 +59,6 @@ target_link_libraries(start
     ${EIGEN_LIBRARIES}
     ${BOOST_LIBRARIES}
     ${catkin_LIBRARIES}
-    ${PROJECT_SOURCE_DIR}/3rdparty/protobuf/lib/libprotobuf.so
     ${PROJECT_SOURCE_DIR}/3rdparty/libzmq/lib/libzmq.so
+    ${PROTOBUF_LIBRARIES}
     )

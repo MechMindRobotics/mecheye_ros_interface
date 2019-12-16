@@ -59,6 +59,7 @@ target_link_libraries(start
     ${EIGEN_LIBRARIES}
     ${BOOST_LIBRARIES}
     ${catkin_LIBRARIES}
+    ${PROJECT_SOURCE_DIR}/3rdparty/protobuf/lib/libprotobuf.so
     ${PROJECT_SOURCE_DIR}/3rdparty/libzmq/lib/libzmq.so
     ${PROTOBUF_LIBRARIES}
     )

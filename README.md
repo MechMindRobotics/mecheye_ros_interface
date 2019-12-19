@@ -6,7 +6,7 @@ Official ROS interface for Mech-Eye cameras.
 
 ## Dependencies:
 - ZeroMQ   >= 4.2.1
-- Protobuf == 3.6.1
+- Protobuf >= 3
 - OpenCV   >= 3
 - PCL 	   >= 1.7 or 1.8
 - Eigen    3.3.0

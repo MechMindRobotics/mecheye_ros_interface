@@ -24,9 +24,16 @@ Official ROS interface for Mech-Eye cameras.
 - Build with CMake.
 - Run with one Mech-Eye camera.
 
-Note: please change `/homeL/lhz/code/eye_ws/src/mecheye_ros_interface` below to the actuall path where you put this ROS package.
+## How to run the node in this ROS package for Mech-Eye interface:
+- for c++ users:
+rosrun mecheye_ros_interface start
+- for python users:
+rosrun mecheye_ros_interface main.py
 
-## ZeroMQ install guide
+
+Note that `/homeL/lhz` will be changed to your home dir manually in `CMakeList.txt`.
+
+## ZeroMQ install guide(C++)
 - `sudo apt install libzmq5 libzmq3-dev` (only work for ubuntu 18.04)
 - for ubuntu 16.04, install from source code:
 
@@ -39,8 +46,12 @@ cd zeromq-4.3.2
 make -j7
 make install
 ```
+##ZeroMQ install guide(python)
+```bash
+sudo pip install pyzmq
+```
 
-## OpenCV4 install guide
+## OpenCV4 install guide(C++)
 `OpenCV 4` can be installed according to official documentation: https://docs.opencv.org/4.1.1/d7/d9f/tutorial_linux_install.html
 
 To avoid version confusion of OpenCV, you should firstly set OpenCV_DIR before find_package(OpenCV REQUIRED) in CMakeLists.txt, e.g.
@@ -62,7 +73,12 @@ make -j7
 make install
 ```
 
-## Protobuf install guide:
+## OpenCV install guide(python)
+```bash
+sudo pip install opencv-python
+```
+
+## Protobuf install guide(C++):
 
 ```bash
 cd ~/code/eye_ws/src/mecheye_ros_interface/3rdparty/src
@@ -75,7 +91,24 @@ make check
 make install
 sudo ldconfig # refresh shared library cache.
 ```
+##Protobuf install guide(Python):
+- install Protobuf for C++ according to steps above
+- add protobuf to environment PATH:
+```bash
+gedit ~/.bashrc
+```
+in the .bashrc file, add the following line at the end:
+export PATH=/home/dominique/eye_ws/src/mecheye_ros_interface/3rdparty/protobuf/bin:$PATH
+
+- install support for python
+```bash
+cd ~/eye_ws/src/mecheye_ros_interface/3rdparty/src/protobuf-3.6.1/python
+python setup.py build
+python setup.py test
+sudo python setup.py install
+```
 
 ## instruction for ubuntu 18.04:
 - rename `CMakeLists_ubuntu18.txt` to `CMakeLists.txt`
 - only need to install `protobuf` from source
+

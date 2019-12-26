@@ -21,6 +21,9 @@ if __name__ == '__main__':
     if not camera.setIp(camera_ip):
         exit(-1)
     intri = camera.getCameraIntri()
+    print ("Camera IP: %s" % (camera.getCameraIp()))
+    print ("Camera ID: %s" % (camera.getCameraId()))
+    print ("Version: %s" % (camera.getCameraVersion()))
 
     pub_color = rospy.Publisher('/color_image', Image, queue_size=1)
     pub_depth = rospy.Publisher('/depth_image', Image, queue_size=1)

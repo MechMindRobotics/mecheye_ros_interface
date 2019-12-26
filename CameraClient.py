@@ -142,9 +142,26 @@ class CameraClient(ZmqClient):
         print("v = %.13f" % (intriValueDouble[3]))
         return intriValueDouble
 
+    def getCameraId(self):
+        return self.__getCameraStatus().eyeId
+
+    def getCameraIp(self):
+        return self.__getCameraStatus().ip
+
+    def getCameraVersion(self):
+        return self.__getCameraStatus().version
+
     def __sendRequest(self, commandx, value):
         request = image_pb2.Request()
         request.command = commandx
         request.valueDouble = value
         reply = ZmqClient.sendReq(self, request)
         return reply
+
+    def __getCameraStatus(self):
+        reply = self.__sendRequest(NetCamCmd.GetCameraStatus, 0)
+        StatusUnicode = reply.cameraStatus
+        StatusBytes = StatusUnicode.encode("utf-8")
+        cameraStatus = cameraStatus_pb2.CameraStatus()
+        cameraStatus.ParseFromString(StatusBytes)
+        return cameraStatus

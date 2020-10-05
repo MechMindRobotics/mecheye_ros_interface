@@ -8,7 +8,7 @@ Official ROS interface for Mech-Eye cameras.
 - ZeroMQ   >= 4.2.1
 - Protobuf >= 3
 - OpenCV   >= 3
-- PCL 	   >= 1.7 or 1.8
+- PCL 	   >= 1.7
 - Eigen    3.3.0
 - VTK      6.3.0
 
@@ -24,11 +24,17 @@ Official ROS interface for Mech-Eye cameras.
 - Build with `catkin build`.
 - Run with one Mech-Eye camera.
 
-## Instruction for ubuntu 16.04:
+## Instruction for Ubuntu 18.04 (ROS Melodic):
+- `sudo apt install libzmq5 libzmq3-dev`
+- build project with `catkin build`
+
+
+## Instruction for Ubuntu 16.04 (ROS Kinetic):
 - Set up mecheye ros interface path:
 ```bash
 cd YOUR_PACKAGE_FOLDER
 export MECHEYE_PATH=${PWD}
+mv CMakeLists_ubuntu16.txt CMakeLists.txt
 mkdir -p $MECHEYE_PATH/3rdparty/src
 ```
 
@@ -78,7 +84,4 @@ export PATH=$MECHEYE_PATH/3rdparty/protobuf/bin:$PATH
 ```
 
 - Build project with `catkin build`
-## Instruction for ubuntu 18.04:
-- `mv CMakeLists_ubuntu18.txt CMakeLists.txt`
-- `sudo apt install libzmq5 libzmq3-dev`
-- build project with `catkin build`
+

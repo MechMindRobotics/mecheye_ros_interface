@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     while (nh.ok()) 
     {
 
-    const cv::Mat depth = camera.captureDepthImg();
+    cv::Mat depth = camera.captureDepthImg();
     const cv::Mat color = camera.captureColorImg();
     if (depth.empty() || color.empty()) return -2;
 
@@ -117,6 +117,7 @@ int main(int argc, char *argv[])
     broadcaster.sendTransform(stColorOpt);
 
     if (save_file){
+        depth.convertTo(depth, CV_16UC1, 1);
         cv::imwrite("/tmp/mechmind_depth.png", depth);
         cv::imwrite("/tmp/mechmind_color.jpg", color);
         PointCloudTools::savePointCloud("/tmp/mechmind_color_cloud.ply", color_cloud);

@@ -16,15 +16,13 @@ endif()
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_CXX_COMPILER $ENV{CXX})
 
-SET("OpenCV_DIR" "3rdparty/opencv4/lib/cmake/opencv4")
-
-
 find_package(PCL REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Protobuf REQUIRED)
+pkg_check_modules(ZMQ REQUIRED libzmq)
 pkg_check_modules(PROTOBUF REQUIRED protobuf)
 
 ## Find catkin and any catkin packages
@@ -37,8 +35,6 @@ catkin_package()
 include_directories(
     proto
     include
-    3rdparty/protobuf/include
-    3rdparty/libzmq/include
     ${PCL_INCLUDE_DIRS}
     ${OpenCV_INCLUDE_DIRS}
     ${ZMQ_INCLUDE_DIRS}
@@ -59,7 +55,5 @@ target_link_libraries(start
     ${EIGEN_LIBRARIES}
     ${BOOST_LIBRARIES}
     ${catkin_LIBRARIES}
-    ${PROJECT_SOURCE_DIR}/3rdparty/protobuf/lib/libprotobuf.so
-    ${PROJECT_SOURCE_DIR}/3rdparty/libzmq/lib/libzmq.so
     ${PROTOBUF_LIBRARIES}
     )

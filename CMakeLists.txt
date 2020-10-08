@@ -1,5 +1,7 @@
 project (mecheye_ros_interface)
 cmake_minimum_required(VERSION 3.5)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARDREQUIRED ON)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)

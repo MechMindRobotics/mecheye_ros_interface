@@ -24,7 +24,7 @@ Official ROS interface for Mech-Eye cameras.
 - Build with `catkin build`.
 - Run with one Mech-Eye camera.
 
-## Instruction for Ubuntu 18.04 (ROS Melodic):
+## Instruction for Ubuntu 18.04 (ROS Melodic) and Ubuntu 20.04 (ROS Noetic):
 - `sudo apt install libzmq5 libzmq3-dev`
 - build project with `catkin build`
 

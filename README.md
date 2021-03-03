@@ -1,6 +1,6 @@
 Mech-Eye ROS Interface
 ====================
-Official ROS interface for Mech-Eye cameras.
+Official ROS interface for Mech-Eye cameras. If the MechEye camera version is before v1.0.0, please download sdk of v0.4.0.
 
 <http://www.mech-mind.net/>
 

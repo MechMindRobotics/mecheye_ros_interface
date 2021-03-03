@@ -22,18 +22,17 @@ int main(int argc, char *argv[])
     ros::init(argc, argv, "mechmind_camera_publisher");
     ros::NodeHandle nh("~");
     CameraClient camera;
-    bool save_file = false;
+    bool save_file = true;
     // Camera ip should be modified to actual ip address.
-    std::string camera_ip = "192.168.1.240";
+    std::string camera_ip = "192.168.3.180";
     nh.getParam("camera_ip", camera_ip);
     nh.getParam("save_file", save_file);
 
-    if (!camera.setIp(camera_ip)) return -1;
-    std::cout << "Camera IP: " << camera.getCameraIp() << std::endl
-    << "Camera ID: " << camera.getCameraId() << std::endl
-    << "Version: " << camera.getCameraVersion() << std::endl;
+    if (!camera.connect(camera_ip)) return -1;
+    std::cout << "Camera ID: " << camera.getCameraId() << std::endl;
+    std::cout << "Version: " << camera.getCameraVersion() << std::endl;
     CameraIntri intri = camera.getCameraIntri();
-	
+
     ros::Publisher pub_color = nh.advertise<sensor_msgs::Image>("/mechmind/color_image", 1);
     ros::Publisher pub_depth = nh.advertise<sensor_msgs::Image>("/mechmind/depth_image", 1);
     ros::Publisher pub_pcl = nh.advertise<sensor_msgs::PointCloud2>("/mechmind/point_cloud", 1);
@@ -48,7 +47,7 @@ int main(int argc, char *argv[])
     const cv::Mat color = camera.captureColorImg();
     if (depth.empty() || color.empty()) return -2;
 
-    const pcl::PointCloud<pcl::PointXYZ> cloud = camera.capturePointCloud(intri);
+    const pcl::PointCloud<pcl::PointXYZ> cloud = camera.capturePointCloud();
 
     cv_bridge::CvImage cv_image, cv_depth;
     cv_image.image = color;
@@ -92,8 +91,7 @@ int main(int argc, char *argv[])
     cv_depth.toImageMsg(ros_depth);
     pcl::toROSMsg(cloud, ros_cloud);
 
-    pcl::PointCloud<pcl::PointXYZRGB> color_cloud;
-    color_cloud = PointCloudTools::getColoredCloud(color, depth, intri);
+    pcl::PointCloud<pcl::PointXYZRGB> color_cloud = camera.captureRgbPointCloud();
     pcl::toROSMsg(color_cloud, ros_color_cloud);
     ros_image.header.frame_id = "mechmind_camera";
     ros_image.header.stamp = camera_info.header.stamp;
@@ -119,7 +117,7 @@ int main(int argc, char *argv[])
     if (save_file){
         cv::imwrite("/tmp/mechmind_depth.png", depth);
         cv::imwrite("/tmp/mechmind_color.jpg", color);
-        PointCloudTools::savePointCloud("/tmp/mechmind_color_cloud.ply", color_cloud);
+        PointCloudTools::saveRgbPointCloud("/tmp/mechmind_color_cloud.ply", color_cloud);
         PointCloudTools::savePointCloud("/tmp/mechmind_cloud.ply", cloud);
         }
     loop_rate.sleep();

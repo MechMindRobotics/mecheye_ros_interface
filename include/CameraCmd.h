@@ -4,7 +4,7 @@ using namespace std;
 enum ImageType {
     DEPTH = 1,
     COLOR = 2,
-    MatXYZ = 4,
+    MatXYZ = 16,
     COLOR_DEPTH = COLOR | DEPTH,
 };
 

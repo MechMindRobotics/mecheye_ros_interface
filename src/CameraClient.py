@@ -18,6 +18,7 @@ VISIBLE_DEPTH_THRESHOLD = 1e-3
 class ImageType():
     DEPTH = 1
     COLOR = 2
+    MatXYZ = 16
     COLOR_DEPTH = COLOR | DEPTH
 
 
@@ -39,7 +40,6 @@ class Command:
     GetServerInfo = "GetServerInfo"
     SetCameraParams = "SetCameraConfig"
     GetCameraParams = "GetCameraConfig"
-    CaptureGratingImage = "CaptureGratingImage"
 
 
 class CameraIntri:

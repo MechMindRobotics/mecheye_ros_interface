@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from CameraClient import CameraClient, ImageType, NetCamCmd, CameraIntri
+from CameraClient import CameraClient, ImageType, Command, CameraIntri
 import sys
 import cv2
 import rospy
@@ -14,14 +14,14 @@ if __name__ == '__main__':
     camera = CameraClient()
     save_file = True
     # camera ip should be modified to actual ip address
-    camera_ip = "192.168.107.1"
+    camera_ip = "192.168.3.180"
     rospy.get_param("camera_ip", camera_ip)
     rospy.get_param("save_file", save_file)
 
-    if not camera.setIp(camera_ip):
+    if not camera.connect(camera_ip):
         exit(-1)
     intri = camera.getCameraIntri()
-    print ("Camera IP: %s" % (camera.getCameraIp()))
+    print ("Camera Info: %s" % (camera.getCameraInfo()))
     print ("Camera ID: %s" % (camera.getCameraId()))
     print ("Version: %s" % (camera.getCameraVersion()))
 

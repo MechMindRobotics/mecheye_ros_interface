@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 import zmq
-import rospy
-import image_pb2
-import cameraStatus_pb2
-
+import sys
 
 def createAddr(ip, port):
     return "tcp://" + ip + ":" + str(port)
@@ -37,18 +34,23 @@ class ZmqClient:
         return len(self.__addr) == 0
 
     def sendReq(self, request):
-        self.__reqBuf = request.SerializeToString()
-        if len(self.__addr) == 0:
-            return {}
-        received = self.__sendMsg()
-        if len(received) == 0:
-            return {}
-        reply = image_pb2.Response()
-
-        reply.ParseFromString(received)
-        return reply
+        try:
+            self.__reqBuf = request
+            if len(self.__addr) == 0:
+                return {}
+            reply = self.__sendMsg()
+            if len(reply) == 0:
+                return {}
+            return reply
+        except Exception as e:
+            print("Network Error! Please check your ip address and connection!")
+            sys.exit(0)
 
     def __sendMsg(self):
-        message = self.__reqBuf
-        self.__socket.send(message)
-        return self.__socket.recv()
+        try:
+            message = self.__reqBuf
+            self.__socket.send_string(message)
+            return self.__socket.recv()
+        except Exception as e:
+            print("Network Error! Please check your ip address and connection!")
+            sys.exit(0)

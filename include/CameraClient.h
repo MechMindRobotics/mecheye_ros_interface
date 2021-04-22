@@ -29,11 +29,14 @@ public:
 	std::string getParameter(const std::string paraName, std::string& error); //exposed API for getting camera's parameters
 	std::string setParameter(const std::string paraName, double value); //exposed API for setting camera's parameters
 	Json::Value getCameraInfo();
+	cv::Size getColorImgSize(); // get the height and width of color image
+	cv::Size getDepthImgSize(); // get the height and width of depth image
 
 
 private:
 	//mmind::Response sendRequest(int command, double value);
 	std::string sendRequest(std::string command, int image_type);
+	Json::Value getImgSize();
 	Json::Value getCameraParameter(const std::string& propertyName);
 	std::string setCameraParameter(const std::string& propertyName, double value);
 	const uint16_t kImagePort = 5577;

@@ -278,6 +278,26 @@ std::string CameraClient::setCameraParameter(const std::string& propertyName, do
 	return "";
 }
 
+cv::Size CameraClient::getColorImgSize()
+{
+	Json::Value size2d = getImgSize()[Service::size2d];
+	return {size2d.get(Json::Value::ArrayIndex(0), 0).asInt(), size2d.get(Json::Value::ArrayIndex(1), 0).asInt()};
+}
+
+cv::Size CameraClient::getDepthImgSize()
+{
+	Json::Value size3d = getImgSize()[Service::size3d];
+	return {size3d.get(Json::Value::ArrayIndex(0), 0).asInt(), size3d.get(Json::Value::ArrayIndex(1), 0).asInt()};
+}
+
+Json::Value CameraClient::getImgSize()
+{
+	Json::Reader reader;
+	Json::Value info;
+    std::string response = sendRequest(Command::GetImageFormat, 0);
+	reader.parse(response.substr(SIZE_OF_JSON,response.size() - SIZE_OF_JSON), info);
+	return info[Service::image_format];
+}
 
 std::string CameraClient::sendRequest(std::string command, int image_type)
 {

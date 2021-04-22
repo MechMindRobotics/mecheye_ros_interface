@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
     if (!camera.connect(camera_ip)) return -1;
     std::cout << "Camera ID: " << camera.getCameraId() << std::endl;
     std::cout << "Version: " << camera.getCameraVersion() << std::endl;
+    std::cout << "Color Image Size: " << camera.getColorImgSize() << std::endl;
+    std::cout << "Depth Image Size: " << camera.getDepthImgSize() << std::endl;
     CameraIntri intri = camera.getCameraIntri();
 
     ros::Publisher pub_color = nh.advertise<sensor_msgs::Image>("/mechmind/color_image", 1);

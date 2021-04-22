@@ -18,6 +18,7 @@ namespace Command {
     std::string SetCameraParams = "SetCameraConfig";
     std::string GetCameraParams = "GetCameraConfig";
     std::string CaptureGratingImage = "CaptureGratingImage";
+    std::string GetImageFormat = "GetImageFormat";
 }
 
 namespace Service {
@@ -27,6 +28,9 @@ namespace Service {
     std::string image_type = "image_type";
     std::string persistent = "persistent";
     std::string camera_config = "camera_config";
+    std::string image_format = "image_format";
+    std::string size2d = "imageSize2D";
+    std::string size3d = "imageSize3D";
 }
 
 constexpr int Encode32FBias = 32768;

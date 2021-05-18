@@ -82,3 +82,8 @@ export PATH=$MECHEYE_PATH/3rdparty/protobuf/bin:$PATH
 - `mv CMakeLists_ubuntu18.txt CMakeLists.txt`
 - `sudo apt install libzmq5 libzmq3-dev`
 - build project with `catkin build`
+
+## Instruction for ubuntu 20.04:
+- `mv CMakeLists_ubuntu20.txt CMakeLists.txt`
+- `sudo apt install libzmq5 libzmq3-dev`
+- build project with `catkin build`

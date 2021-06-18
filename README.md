@@ -82,3 +82,14 @@ export PATH=$MECHEYE_PATH/3rdparty/protobuf/bin:$PATH
 - `mv CMakeLists_ubuntu18.txt CMakeLists.txt`
 - `sudo apt install libzmq5 libzmq3-dev`
 - build project with `catkin build`
+- One example in ubuntu 18.04:
+- `mkdir ~/ros_ws`
+- `cd ~/ros_ws && mkdir src`
+- `cd src`
+- `git clone https://github.com/MechMindRobotics/mecheye_ros_interface`
+- `cd mecheye_ros_interface`
+- `mv CMakeLists_ubuntu18.txt CMakeLists.txt`
+- `cd ~/ros_ws && catkin_make`
+- `roscore`
+- Open another terminal and run `cd ~/ros_ws/devel/lib/mecheye_ros_interface &&./star`. Then, the camera will start working.
+- Camera IP address and image save path can be changed in /mecheye_ros_interface/src/main.cpp.

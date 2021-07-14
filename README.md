@@ -85,3 +85,6 @@ export PATH=$MECHEYE_PATH/3rdparty/protobuf/bin:$PATH
 
 - Build project with `catkin build`
 
+## Take picture and publish it to ROS message
+1. run the camera: `roslaunch mecheye_ros_interface start_camera.launch`
+2. take a picture: `rosservice call /run_mechmind_camera`

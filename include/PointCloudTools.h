@@ -20,14 +20,22 @@ class PointCloudTools
 {
 public:
     static pcl::PointCloud<pcl::PointXYZ> getCloudFromDepth(cv::Mat& depth,
-                                                            const CameraIntri& intri);
-    static pcl::PointCloud<pcl::PointXYZRGB> getColoredCloud(const cv::Mat& color, const cv::Mat& depth,
-                                                                  const CameraIntri& intri);
-    static void savePointCloud(const std::string& filePath,
-                               const pcl::PointCloud<pcl::PointXYZ>& cloud);
+        const CameraIntri& intri);
+
+    static pcl::PointCloud<pcl::PointXYZRGB> getRgbCloudFromDepth(cv::Mat& depth,
+        const cv::Mat& color,
+        const CameraIntri& intri);
+
+    static pcl::PointCloud<pcl::PointXYZ> getCloudFromDepthC3(cv::Mat& depth);
+
+    static pcl::PointCloud<pcl::PointXYZRGB> getRgbCloudFromDepthC3(cv::Mat& depth,
+        const cv::Mat& color);
 
     static void savePointCloud(const std::string& filePath,
-                               const pcl::PointCloud<pcl::PointXYZRGB>& cloud);
+        const pcl::PointCloud<pcl::PointXYZ>& cloud);
+
+    static void saveRgbPointCloud(const std::string& filePath,
+        const pcl::PointCloud<pcl::PointXYZRGB>& cloud);
 
 private:
     static pcl::PointXYZ mapPoint2dToPoint3d(int r, int c, float depth, const CameraIntri& intri);

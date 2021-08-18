@@ -1,12 +1,8 @@
 #include "CameraClient.h"
 #include <opencv2/imgcodecs.hpp>
-
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-
 #include <sstream>
-#include <tf/transform_broadcaster.h>
-
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <sensor_msgs/CameraInfo.h>
@@ -41,10 +37,11 @@ public:
         pub_pcl = nh.advertise<sensor_msgs::PointCloud2>("/mechmind/point_cloud", 1, true);
         pub_pcl_color = nh.advertise<sensor_msgs::PointCloud2>("/mechmind/color_point_cloud", 1, true);
         pub_camera_info = nh.advertise<sensor_msgs::CameraInfo>("/mechmind/camera_info", 1, true);
-        camera.setIp(camera_ip);
-        std::cout << "Camera IP: " << camera.getCameraIp() << std::endl
-                  << "Camera ID: " << camera.getCameraId() << std::endl
-                  << "Version: " << camera.getCameraVersion() << std::endl;
+        if (!camera.connect(camera_ip)) return;
+        std::cout << "Camera ID: " << camera.getCameraId() << std::endl;
+        std::cout << "Version: " << camera.getCameraVersion() << std::endl;
+        std::cout << "Color Image Size: " << camera.getColorImgSize() << std::endl;
+        std::cout << "Depth Image Size: " << camera.getDepthImgSize() << std::endl;
         intri = camera.getCameraIntri();
         service = nh.advertiseService("run_mechmind_camera",
                                       &MechMindCamera::get_camera_callback, this);
@@ -52,11 +49,11 @@ public:
 
 
     bool get_camera_callback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res) {
-        cv::Mat depth = camera.captureDepthImg();
+        const cv::Mat depth = camera.captureDepthImg();
         const cv::Mat color = camera.captureColorImg();
-//        if (depth.empty() || color.empty()) return -2;
+        if (depth.empty() || color.empty()) return -2;
 
-        const pcl::PointCloud<pcl::PointXYZ> cloud = camera.capturePointCloud(intri);
+        const pcl::PointCloud<pcl::PointXYZ> cloud = camera.capturePointCloud();
 
         cv_bridge::CvImage cv_image, cv_depth;
         cv_image.image = color;
@@ -79,17 +76,20 @@ public:
         camera_info.D = D;
 
         std::vector<double> K{intri.fx, 0.0, intri.u, 0.0, intri.fy, intri.v, 0.0, 0.0, 1.0};
-        for (size_t i = 0; i < 9; ++i) {
+        for(size_t i = 0; i < 9; ++i)
+        {
             camera_info.K[i] = K[i];
         }
 
         std::vector<double> R{1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
-        for (size_t i = 0; i < 9; ++i) {
+        for(size_t i = 0; i < 9; ++i)
+        {
             camera_info.R[i] = R[i];
         }
 
         std::vector<double> P{intri.fx, 0.0, intri.u, 0.0, 0.0, intri.fy, intri.v, 0.0, 0.0, 0.0, 1.0, 0.0};
-        for (size_t i = 0; i < 12; ++i) {
+        for(size_t i = 0; i < 12; ++i)
+        {
             camera_info.P[i] = P[i];
         }
 
@@ -97,26 +97,24 @@ public:
         cv_depth.toImageMsg(ros_depth);
         pcl::toROSMsg(cloud, ros_cloud);
 
-        pcl::PointCloud<pcl::PointXYZRGB> color_cloud;
-        color_cloud = PointCloudTools::getColoredCloud(color, depth, intri);
+        pcl::PointCloud<pcl::PointXYZRGB> color_cloud = camera.captureRgbPointCloud();
         pcl::toROSMsg(color_cloud, ros_color_cloud);
         ros_image.header.frame_id = "mechmind_camera";
         ros_image.header.stamp = camera_info.header.stamp;
         ros_depth.header.frame_id = "mechmind_camera";
         ros_cloud.header.frame_id = "mechmind_camera";
         ros_color_cloud.header.frame_id = "mechmind_camera";
+
         pub_pcl.publish(ros_cloud);
         pub_color.publish(ros_image);
         pub_depth.publish(ros_depth);
         pub_pcl_color.publish(ros_color_cloud);
         pub_camera_info.publish(camera_info);
-        ros::Duration(0.1).sleep();
 
-        if (save_file) {
-            depth.convertTo(depth, CV_16UC1, 1);
+        if (save_file){
             cv::imwrite("/tmp/mechmind_depth.png", depth);
             cv::imwrite("/tmp/mechmind_color.jpg", color);
-            PointCloudTools::savePointCloud("/tmp/mechmind_color_cloud.ply", color_cloud);
+            PointCloudTools::saveRgbPointCloud("/tmp/mechmind_color_cloud.ply", color_cloud);
             PointCloudTools::savePointCloud("/tmp/mechmind_cloud.ply", cloud);
         }
         res.success = true;

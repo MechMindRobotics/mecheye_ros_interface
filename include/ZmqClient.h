@@ -3,6 +3,7 @@
 
 #include <zmq.hpp>
 #include <mutex>
+#include <iostream>
 
 class ZmqClient
 {
@@ -12,19 +13,15 @@ public:
     bool empty() const { return _addr.empty(); }
 
 protected:
-    template <typename Reply, typename Req>
-    Reply sendReq(const Req& request)
+    std::string sendReq(std::string request)
     {
-        Reply reply;
-        if (_addr.empty()) return reply;
-
+        if (_addr.empty()) return "";
         // Lock this request
         std::lock_guard<std::mutex> lock(_mutex);
-        request.SerializeToString(&_reqBuf);
+        _reqBuf = request;
         const zmq::message_t received = sendMsg();
-        if (received.size() == 0) return reply;
-
-        reply.ParseFromArray(received.data(), received.size());
+        if (received.size() == 0) return "";
+        std::string reply((char*)received.data(), received.size());
         return reply;
     }
 

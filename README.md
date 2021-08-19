@@ -16,17 +16,10 @@ Official ROS interface for Mech-Eye cameras. If the MechEye camera version is be
 - Connect to camera via specific ip address.
 - Call other functions.
 
-
-## How to build and run sample project:
-
-- Download or build dependency files.
-- Build with `catkin build`.
-- Run with one Mech-Eye camera.
-
 ## Instruction for ubuntu 16.04:
 - Set up mecheye ros interface path:
 ```bash
-cd YOUR_PACKAGE_FOLDER
+cd YOUR_PACKAGE_FOLDER (~/ros_ws/src for example)
 mv CMakeLists_ubuntu16.txt CMakeLists.txt
 export MECHEYE_PATH=${PWD}
 mkdir -p $MECHEYE_PATH/3rdparty/src
@@ -72,5 +65,8 @@ make install
     - save_file: `true` to enable save file, otherwise keep it as `false`
     - camera_ip: change to your camera ip address here
     - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/main.cpp`.
+
+## Instruction for using the camera:
+- Source the build workspace: `source ~/ros_ws/devel/setup.bash`
 - Run `roslaunch mecheye_ros_interface start_camera.launch`. Then, the camera will start working.
-- Open a new terminal, run `rosservice call /run_mechmind_camera` to take a picture.
+- Open a new terminal, source the workspace and run `rosservice call /run_mechmind_camera` to take a picture.

@@ -19,7 +19,8 @@ Official ROS interface for Mech-Eye cameras. If the MechEye camera version is be
 ## Instruction for ubuntu 16.04:
 - Set up mecheye ros interface path:
 ```bash
-cd YOUR_PACKAGE_FOLDER (~/ros_ws/src for example)
+cd YOUR_WORKSPACE_FOLDER (~/ros_ws/src for example)
+git clone https://github.com/MechMindRobotics/mecheye_ros_interface.git && cd mecheye_ros_interface
 mv CMakeLists_ubuntu16.txt CMakeLists.txt
 export MECHEYE_PATH=${PWD}
 mkdir -p $MECHEYE_PATH/3rdparty/src

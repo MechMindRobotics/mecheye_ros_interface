@@ -34,7 +34,6 @@ catkin_package()
 
 
 include_directories(
-    proto
     include
     ${PCL_INCLUDE_DIRS}
     ${OpenCV_INCLUDE_DIRS}
@@ -46,7 +45,7 @@ include_directories(
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 aux_source_directory(src SRC_LIST)
-add_executable(start ${SRC_LIST} ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(start ${SRC_LIST})
 target_link_libraries(start
     ${PCL_LIBRARIES}
     ${OpenCV_LIBRARIES}

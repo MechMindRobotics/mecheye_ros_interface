@@ -1,14 +1,13 @@
 Mech-Eye ROS Interface
 ====================
-Official ROS interface for Mech-Eye cameras.
+Official ROS interface for Mech-Eye cameras. If the MechEye camera version is before v1.2.0, please download sdk of previous versions, see tags.
 
 <http://www.mech-mind.net/>
 
 ## Dependencies:
 - ZeroMQ   >= 4.2.1
-- Protobuf >= 3
 - OpenCV   >= 3
-- PCL 	   >= 1.7
+- PCL      >= 1.7 or 1.8
 - Eigen    3.3.0
 - VTK      6.3.0
 
@@ -24,17 +23,12 @@ Official ROS interface for Mech-Eye cameras.
 - Build with `catkin build`.
 - Run with one Mech-Eye camera.
 
-## Instruction for Ubuntu 18.04 (ROS Melodic) and Ubuntu 20.04 (ROS Noetic):
-- `sudo apt install libzmq5 libzmq3-dev`
-- build project with `catkin build`
-
-
-## Instruction for Ubuntu 16.04 (ROS Kinetic):
+## Instruction for ubuntu 16.04:
 - Set up mecheye ros interface path:
 ```bash
 cd YOUR_PACKAGE_FOLDER
-export MECHEYE_PATH=${PWD}
 mv CMakeLists_ubuntu16.txt CMakeLists.txt
+export MECHEYE_PATH=${PWD}
 mkdir -p $MECHEYE_PATH/3rdparty/src
 ```
 
@@ -83,8 +77,15 @@ make install
 export PATH=$MECHEYE_PATH/3rdparty/protobuf/bin:$PATH
 ```
 
-- Build project with `catkin build`
-
-## Take picture and publish it to ROS message
-1. run the camera: `roslaunch mecheye_ros_interface start_camera.launch`
-2. take a picture: `rosservice call /run_mechmind_camera`
+## Instruction for ubuntu 18.04:
+- `sudo apt install libzmq5 libzmq3-dev`
+- `mkdir -p ~/ros_ws/src`
+- `cd ~/ros_ws/src`
+- `git clone https://github.com/MechMindRobotics/mecheye_ros_interface`
+- `cd ~/ros_ws && catkin_make`
+- Change config in `~/ros_ws/src/mecheye_ros_interface/launch/start_camera.launch`
+    - save_file: `true` to enable save file, otherwise keep to false
+    - camera_ip: change to your camera ip address here
+    - Image save path can be changed in source code `/mecheye_ros_interface/src/main.cpp`.
+- Run `roslaunch mecheye_ros_interface start_camera.launch`. Then, the camera will start working.
+- Open a new terminal, run `rosservice call /run_mechmind_camera` to take a picture.

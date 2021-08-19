@@ -63,29 +63,14 @@ make -j7
 make install
 ```
 
-- Protobuf install guide:
-
-```bash
-cd $MECHEYE_PATH/3rdparty/src
-wget https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protobuf-all-3.6.1.zip
-unzip protobuf-all-3.6.1.zip
-cd protobuf-3.6.1
-./configure --prefix=$MECHEYE_PATH/3rdparty/protobuf
-make -j7
-make check
-make install
-export PATH=$MECHEYE_PATH/3rdparty/protobuf/bin:$PATH
-```
-
 ## Instruction for ubuntu 18.04:
 - `sudo apt install libzmq5 libzmq3-dev`
-- `mkdir -p ~/ros_ws/src`
-- `cd ~/ros_ws/src`
+- `mkdir -p ~/ros_ws/src && cd ~/ros_ws/src`
 - `git clone https://github.com/MechMindRobotics/mecheye_ros_interface`
 - `cd ~/ros_ws && catkin_make`
 - Change config in `~/ros_ws/src/mecheye_ros_interface/launch/start_camera.launch`
-    - save_file: `true` to enable save file, otherwise keep to false
+    - save_file: `true` to enable save file, otherwise keep it as `false`
     - camera_ip: change to your camera ip address here
-    - Image save path can be changed in source code `/mecheye_ros_interface/src/main.cpp`.
+    - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/main.cpp`.
 - Run `roslaunch mecheye_ros_interface start_camera.launch`. Then, the camera will start working.
 - Open a new terminal, run `rosservice call /run_mechmind_camera` to take a picture.

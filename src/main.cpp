@@ -102,8 +102,11 @@ public:
         ros_image.header.frame_id = "mechmind_camera";
         ros_image.header.stamp = camera_info.header.stamp;
         ros_depth.header.frame_id = "mechmind_camera";
+        ros_depth.header.stamp = camera_info.header.stamp;
         ros_cloud.header.frame_id = "mechmind_camera";
+        ros_cloud.header.stamp = camera_info.header.stamp;
         ros_color_cloud.header.frame_id = "mechmind_camera";
+        ros_color_cloud.header.stamp = camera_info.header.stamp;
 
         pub_pcl.publish(ros_cloud);
         pub_color.publish(ros_image);

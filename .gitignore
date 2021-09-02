@@ -1,2 +1,4 @@
 3rdparty/
 .vscode/
+.idea/
+cmake-build-debug

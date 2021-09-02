@@ -1,5 +1,7 @@
 project (mecheye_ros_interface)
 cmake_minimum_required(VERSION 3.5)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARDREQUIRED ON)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -16,16 +18,13 @@ endif()
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_CXX_COMPILER $ENV{CXX})
 
-SET("OpenCV_DIR" "3rdparty/opencv4/lib/cmake/opencv4")
-
-
 find_package(PCL REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(PkgConfig REQUIRED)
-find_package(Protobuf REQUIRED)
-pkg_check_modules(PROTOBUF REQUIRED protobuf)
+pkg_check_modules(ZMQ REQUIRED libzmq)
+pkg_check_modules(JSONCPP REQUIRED jsoncpp)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS cv_bridge image_transport roscpp rospy std_msgs genmsg sensor_msgs tf)
@@ -35,23 +34,18 @@ catkin_package()
 
 
 include_directories(
-    proto
     include
-    3rdparty/protobuf/include
-    3rdparty/libzmq/include
     ${PCL_INCLUDE_DIRS}
     ${OpenCV_INCLUDE_DIRS}
     ${ZMQ_INCLUDE_DIRS}
-    ${PROTOBUF_INCLUDE_DIRS}
     ${EIGEN_INCLUDE_DIRS}
     ${BOOST_INCLUDE_DIRS}
     ${catkin_INCLUDE_DIRS}
     )
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ./proto/cameraStatus.proto ./proto/image.proto)
 
 aux_source_directory(src SRC_LIST)
-add_executable(start ${SRC_LIST} ${PROTO_SRCS} ${PROTO_HDRS})
+add_executable(start ${SRC_LIST})
 target_link_libraries(start
     ${PCL_LIBRARIES}
     ${OpenCV_LIBRARIES}
@@ -59,7 +53,5 @@ target_link_libraries(start
     ${EIGEN_LIBRARIES}
     ${BOOST_LIBRARIES}
     ${catkin_LIBRARIES}
-    ${PROJECT_SOURCE_DIR}/3rdparty/protobuf/lib/libprotobuf.so
-    ${PROJECT_SOURCE_DIR}/3rdparty/libzmq/lib/libzmq.so
-    ${PROTOBUF_LIBRARIES}
+    ${JSONCPP_LIBRARIES}
     )

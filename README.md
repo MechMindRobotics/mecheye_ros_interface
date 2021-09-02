@@ -6,9 +6,8 @@ Official ROS interface for Mech-Eye cameras. If the MechEye camera version is be
 
 ## Dependencies:
 - ZeroMQ   >= 4.2.1
-- Protobuf >= 3
 - OpenCV   >= 3
-- PCL 	   >= 1.7 or 1.8
+- PCL      >= 1.7 or 1.8
 - Eigen    3.3.0
 - VTK      6.3.0
 
@@ -17,17 +16,12 @@ Official ROS interface for Mech-Eye cameras. If the MechEye camera version is be
 - Connect to camera via specific ip address.
 - Call other functions.
 
-
-## How to build and run sample project:
-
-- Download or build dependency files.
-- Build with `catkin build`.
-- Run with one Mech-Eye camera.
-
 ## Instruction for ubuntu 16.04:
 - Set up mecheye ros interface path:
 ```bash
-cd YOUR_PACKAGE_FOLDER
+cd YOUR_WORKSPACE_FOLDER (~/ros_ws/src for example)
+git clone https://github.com/MechMindRobotics/mecheye_ros_interface.git && cd mecheye_ros_interface
+mv CMakeLists_ubuntu16.txt CMakeLists.txt
 export MECHEYE_PATH=${PWD}
 mkdir -p $MECHEYE_PATH/3rdparty/src
 ```
@@ -63,33 +57,17 @@ make -j7
 make install
 ```
 
-- Protobuf install guide:
-
-```bash
-cd $MECHEYE_PATH/3rdparty/src
-wget https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protobuf-all-3.6.1.zip
-unzip protobuf-all-3.6.1.zip
-cd protobuf-3.6.1
-./configure --prefix=$MECHEYE_PATH/3rdparty/protobuf
-make -j7
-make check
-make install
-export PATH=$MECHEYE_PATH/3rdparty/protobuf/bin:$PATH
-```
-
-- Build project with `catkin build`
 ## Instruction for ubuntu 18.04:
-- `mv CMakeLists_ubuntu18.txt CMakeLists.txt`
 - `sudo apt install libzmq5 libzmq3-dev`
-- build project with `catkin build`
-- One example in ubuntu 18.04:
-- `mkdir ~/ros_ws`
-- `cd ~/ros_ws && mkdir src`
-- `cd src`
+- `mkdir -p ~/ros_ws/src && cd ~/ros_ws/src`
 - `git clone https://github.com/MechMindRobotics/mecheye_ros_interface`
-- `cd mecheye_ros_interface`
-- `mv CMakeLists_ubuntu18.txt CMakeLists.txt`
 - `cd ~/ros_ws && catkin_make`
-- `roscore`
-- Open another terminal and run `cd ~/ros_ws/devel/lib/mecheye_ros_interface &&./star`. Then, the camera will start working.
-- Camera IP address and image save path can be changed in /mecheye_ros_interface/src/main.cpp.
+- Change config in `~/ros_ws/src/mecheye_ros_interface/launch/start_camera.launch`
+    - save_file: `true` to enable save file, otherwise keep it as `false`
+    - camera_ip: change to your camera ip address here
+    - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/main.cpp`.
+
+## Instruction for using the camera:
+- Source the build workspace: `source ~/ros_ws/devel/setup.bash`
+- Run `roslaunch mecheye_ros_interface start_camera.launch`. Then, the camera will start working.
+- Open a new terminal, source the workspace and run `rosservice call /run_mechmind_camera` to take a picture.

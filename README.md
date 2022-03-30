@@ -1,25 +1,28 @@
-Mech-Eye ROS Interface
-====================
+# Mech-Eye ROS Interface
+
 Official ROS interface for Mech-Eye cameras.
 
 Please select the proper branch corresponding to the camera firmware version.
 
 <http://www.mech-mind.net/>
 
-## Dependencies:
-- ZeroMQ   >= 4.2.1
+## Dependencies
+
 - OpenCV   >= 3
 - PCL      >= 1.7 or 1.8
 - Eigen    3.3.0
 - VTK      6.3.0
 
-## How to use interface functions of Mech-Eye cameras:
-- Interface functions are declared in ```CameraClient.h```.
-- Connect to camera via specific ip address.
+## How to use interface functions of Mech-Eye cameras
+
+- Interface functions can be found in documentation inside [Mech-Eye SDK](https://www.mech-mind.com/download/CameraSDK.html).
+- Select camera in LAN to connect.
 - Call other functions.
 
-## Instruction for ubuntu 16.04:
+## Instruction for ubuntu 16.04
+
 - Set up mecheye ros interface path:
+
 ```bash
 cd YOUR_WORKSPACE_FOLDER (~/ros_ws/src for example)
 git clone https://github.com/MechMindRobotics/mecheye_ros_interface.git && cd mecheye_ros_interface
@@ -28,21 +31,8 @@ export MECHEYE_PATH=${PWD}
 mkdir -p $MECHEYE_PATH/3rdparty/src
 ```
 
-- ZeroMQ install guide
-
-```bash
-cd $MECHEYE_PATH/3rdparty/src
-wget https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.zip
-unzip zeromq-4.3.2.zip
-cd zeromq-4.3.2
-./autogen.sh
-./configure --prefix=$MECHEYE_PATH/3rdparty/libzmq
-make -j7
-make install
-```
-
 - OpenCV4 install guide
-`OpenCV4` can be installed according to official documentation: https://docs.opencv.org/4.1.1/d7/d9f/tutorial_linux_install.html
+`OpenCV4` can be installed according to [official documentation](https://docs.opencv.org/4.1.1/d7/d9f/tutorial_linux_install.html)
 
 ```bash
 sudo apt-get install build-essential
@@ -59,17 +49,38 @@ make -j7
 make install
 ```
 
-## Instruction for ubuntu 18.04:
-- `sudo apt install libzmq5 libzmq3-dev`
-- `mkdir -p ~/ros_ws/src && cd ~/ros_ws/src`
-- `git clone https://github.com/MechMindRobotics/mecheye_ros_interface`
-- `cd ~/ros_ws && catkin_make`
-- Change config in `~/ros_ws/src/mecheye_ros_interface/launch/start_camera.launch`
-    - save_file: `true` to enable save file, otherwise keep it as `false`
-    - camera_ip: change to your camera ip address here
-    - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/main.cpp`.
+## Instruction for ubuntu 18.04
 
-## Instruction for using the camera:
-- Source the build workspace: `source ~/ros_ws/devel/setup.bash`
-- Run `roslaunch mecheye_ros_interface start_camera.launch`. Then, the camera will start working.
-- Open a new terminal, source the workspace and run `rosservice call /run_mechmind_camera` to take a picture.
+``` bash
+sudo apt install libzmq5 libzmq3-dev
+mkdir -p ~/ros_ws/src && cd ~/ros_ws/src
+git clone https://github.com/MechMindRobotics/mecheye_ros_interface
+cd ~/ros_ws && catkin_make
+```
+
+- Change config in `~/ros_ws/src/mecheye_ros_interface/launch/start_camera.launch`
+  - save_file: `true` to enable save file, otherwise keep it as `false`
+  - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/main.cpp`.
+
+## Instruction for using the camera
+
+- Source the build workspace
+
+  ```bash
+  source ~/ros_ws/devel/setup.bash
+  ```
+
+  Run
+
+  ```bash
+  roslaunch mecheye_ros_interface start_camera.launch 
+  ```
+
+  Then, the camera will start working.
+- Open a new terminal, source the workspace and run
+
+  ```bash
+  rosservice call /run_mechmind_camera
+  ```
+  
+  to take a picture.

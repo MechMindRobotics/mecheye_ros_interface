@@ -71,7 +71,7 @@ public:
         }
     }
 
-    bool pub_rgb_image()
+    void pub_rgb_image()
     {
         const cv::Mat color = camera.captureColorImg();
         cv_bridge::CvImage cv_image;

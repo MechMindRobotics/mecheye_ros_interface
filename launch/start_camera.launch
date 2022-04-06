@@ -2,6 +2,7 @@
 <launch>
     <arg name="save_file" default="false"/>
     <arg name="camera_ip" default="192.168.0.123"/>
+    <arg name="use_external_intri" default="false"/>
 
     <node name="mechmind_camera_start" pkg="mecheye_ros_interface" type="start" output="screen">
         <param name="save_file" value="$(arg save_file)"/>

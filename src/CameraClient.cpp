@@ -158,7 +158,7 @@ cv::Mat CameraClient::captureColorImg()
 		std::cout << "Client color image is empty!" << std::endl;
 		return {};
 	}
-	std::cout << "Color image captured!" << std::endl;
+	// std::cout << "Color image captured!" << std::endl;
 	return cv::imdecode(asMat(imageRGB), cv::ImreadModes::IMREAD_COLOR);
 }
 

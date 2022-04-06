@@ -2,21 +2,23 @@ syntax = "proto3";
 
 package mmind;
 
-message Request {
+message Request
+{
     int32 command = 1;
-	double valueDouble = 2;
+    double valueDouble = 2;
     repeated double mergeMatrix = 3;
     string valueString = 4;
 }
 
-message Response {
+message Response
+{
     int32 command = 1;
     bytes imageRGB = 2;
     bytes imageDepth = 3;
     bytes imageIr = 4;
     repeated string cameraIds = 5;
-	bytes imageGrating = 6;
-	string camIntri = 7;
-	string offsetParams = 8;
-	string cameraStatus = 9;
+    bytes imageGrating = 6;
+    string camIntri = 7;
+    string offsetParams = 8;
+    string cameraStatus = 9;
 }

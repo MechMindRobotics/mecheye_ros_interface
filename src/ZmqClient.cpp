@@ -1,17 +1,19 @@
 #include "ZmqClient.h"
 #include <iostream>
 
-namespace {
+namespace
+{
 std::mutex _mutex;
 std::string createAddr(const std::string& ip, uint16_t port)
 {
     return "tcp://" + ip + ':' + std::to_string(port);
 }
-}
+}  // namespace
 
 bool ZmqClient::setAddr(const std::string& ip, uint16_t port, int rcvTimeout)
 {
-    if (ip.empty()) return false;
+    if (ip.empty())
+        return false;
 
     if (!_addr.empty())
     {
@@ -49,7 +51,8 @@ zmq::message_t ZmqClient::sendMsg()
         {
             return message;
         }
-    } catch (const zmq::error_t& t)
+    }
+    catch (const zmq::error_t& t)
     {
         std::cout << _addr.c_str() << "socket error: " << t.what() << std::endl;
     }

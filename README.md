@@ -1,6 +1,6 @@
 Mech-Eye ROS Interface
 ====================
-Official ROS interface for Mech-Eye cameras. 
+Official ROS interface for Mech-Eye cameras.
 
 Please select the proper branch corresponding to the camera firmware version.
 

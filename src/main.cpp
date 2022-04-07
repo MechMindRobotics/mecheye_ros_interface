@@ -1,7 +1,6 @@
 #include "CameraClient.h"
 #include <opencv2/imgcodecs.hpp>
 #include "ros/ros.h"
-#include "std_msgs/String.h"
 #include <sstream>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
@@ -34,6 +33,7 @@ public:
     MechMindCamera()
     {
         ros::NodeHandle pnh("~");
+        // Camera ip should be modified to actual ip address.
         pnh.getParam("camera_ip", camera_ip);
         pnh.getParam("save_file", save_file);
         pnh.getParam("use_external_intri", use_external_intri);
@@ -41,8 +41,6 @@ public:
         pnh.getParam("fy", fy);
         pnh.getParam("u", u);
         pnh.getParam("v", v);
-
-        // Camera ip should be modified to actual ip address.
 
         pub_color = nh.advertise<sensor_msgs::Image>("/mechmind/color_image", 1, true);
         pub_depth = nh.advertise<sensor_msgs::Image>("/mechmind/depth_image", 1, true);

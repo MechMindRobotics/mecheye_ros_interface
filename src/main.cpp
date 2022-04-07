@@ -53,13 +53,16 @@ public:
         std::cout << "Version: " << camera.getCameraVersion() << std::endl;
         std::cout << "Color Image Size: " << camera.getColorImgSize() << std::endl;
         std::cout << "Depth Image Size: " << camera.getDepthImgSize() << std::endl;
-        intri = camera.getCameraIntri();
         if (use_external_intri)
         {
             intri.fx = fx;
             intri.fy = fy;
             intri.u = u;
             intri.v = v;
+        }
+        else
+        {
+            intri = camera.getCameraIntri();
         }
 
         service = nh.advertiseService("run_mechmind_camera", &MechMindCamera::get_camera_callback, this);

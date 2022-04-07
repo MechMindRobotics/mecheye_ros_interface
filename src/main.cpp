@@ -88,8 +88,8 @@ public:
         sensor_msgs::CameraInfo camera_info;
         camera_info.header.stamp = ros_image.header.stamp;
         camera_info.header.frame_id = "mechmind_camera";
-        camera_info.height = 1024;
-        camera_info.width = 1280;
+        camera_info.height = color.rows;
+        camera_info.width = color.cols;
         camera_info.distortion_model = "plumb_bob";
         std::vector<double> D(5, 0.0);
         camera_info.D = D;

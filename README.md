@@ -15,7 +15,7 @@ Please select the proper branch corresponding to the camera firmware version.
 
 ## How to use interface functions of Mech-Eye cameras
 
-- Interface functions can be found in documentation inside [Mech-Eye SDK](https://www.mech-mind.com/download/CameraSDK.html).
+- Interface functions can be found in documentation inside [Mech-Eye SDK](https://www.mech-mind.com/download/camera-sdk.html).
 - Select camera in LAN to connect.
 - Call other functions.
 

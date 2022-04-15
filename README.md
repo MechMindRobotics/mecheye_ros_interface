@@ -1,6 +1,6 @@
 # Mech-Eye ROS Interface
 
-This repository contains the official ROS interface for Mech-Eye SDK v1.5.1.
+This repository contains the official ROS interface for [Mech-Eye SDK v1.5.1](https://www.mech-mind.com/download/camera-sdk.html).
 
 ## Installation
 
@@ -20,7 +20,7 @@ Download and install MechEyeApi_1.5.1 compatible with Ubuntu from this [link](ht
 
 ### Instruction for Ubuntu 16.04
 
-- Set up mecheye ros interface path
+- Set up a mecheye ros interface path
 
   ```bash
   cd YOUR_WORKSPACE_FOLDER (~/ros_ws/src for example)
@@ -32,7 +32,7 @@ Download and install MechEyeApi_1.5.1 compatible with Ubuntu from this [link](ht
   git clone https://github.com/MechMindRobotics/mecheye_ros_interface.git && cd mecheye_ros_interface
   ```
 
-- Switch to Ubuntu16 CMakeLists
+- Switch to the Ubuntu16 CMakeLists
 
   ```bash
   mv CMakeLists_ubuntu16.txt CMakeLists.txt
@@ -64,7 +64,7 @@ Download and install MechEyeApi_1.5.1 compatible with Ubuntu from this [link](ht
   sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
   ```
 
-- OpenCV4 install guide. `OpenCV4` can be installed according to [official documentation](https://docs.opencv.org/4.1.1/d7/d9f/tutorial_linux_install.html)
+- OpenCV4 install guide. `OpenCV4` can be installed according to the [official documentation](https://docs.opencv.org/4.1.1/d7/d9f/tutorial_linux_install.html)
 
   ```bash
   cd $MECHEYE_PATH/3rdparty/src

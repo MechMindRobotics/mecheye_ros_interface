@@ -153,12 +153,3 @@ Download and install MechEyeApi_1.5.1 compatible with Ubuntu from this [link](ht
 
 - Select a camera in LAN to connect and capture once.
 - Call other functions available in the [SDK](https://www.mech-mind.com/download/camera-sdk.html) documentation.
-
-  Then, the camera will start working.
-- Open a new terminal, source the workspace and run
-
-  ```bash
-  rosservice call /run_mechmind_camera
-  ```
-  
-  to take a picture.

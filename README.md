@@ -1,6 +1,6 @@
 # Mech-Eye ROS Interface
 
-This repository contains the official ROS interface for [Mech-Eye SDK v1.5.1](https://www.mech-mind.com/download/camera-sdk.html).
+This repository contains the official ROS interface for Mech-Eye camera.
 
 ## Installation
 
@@ -20,108 +20,51 @@ Download and install MechEyeApi_1.5.1 compatible with Ubuntu from this [link](ht
 
 ### Instruction for Ubuntu 16.04
 
-- Set up a mecheye ros interface path
+- Download this ROS interface 
 
   ```bash
-  cd YOUR_WORKSPACE_FOLDER (~/ros_ws/src for example)
-  ```
-
-- Clone the repository
-
-  ```bash
+  cd YOUR_WORKSPACE_FOLDER (~/ros_ws/src for example)   
   git clone https://github.com/MechMindRobotics/mecheye_ros_interface.git && cd mecheye_ros_interface
+  mv CMakeLists_ubuntu16.txt CMakeLists.txt   # Switch to the Ubuntu16 CMakeLists
+  export MECHEYE_PATH=${PWD}  # Add present working directory to environment variable
   ```
-
-- Switch to the Ubuntu16 CMakeLists
+  
+ - Install dependencies
 
   ```bash
-  mv CMakeLists_ubuntu16.txt CMakeLists.txt
+   sudo apt-get install build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev 
+   sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
   ```
 
-- Add present working directory to environment variable
-
-  ```bash
-  export MECHEYE_PATH=${PWD}
-  ```
-
-- Create new directory for dependencies
+- Install OpenCV according to the [official documentation](https://docs.opencv.org/4.1.1/d7/d9f/tutorial_linux_install.html)
 
   ```bash
   mkdir -p $MECHEYE_PATH/3rdparty/src
-  ```
-
-- Install packages
-
-  ```bash
-  sudo apt-get install build-essential
-  ```
-
-  ```bash
-  sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-  ```
-
-  ```bash
-  sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
-  ```
-
-- OpenCV4 install guide. `OpenCV4` can be installed according to the [official documentation](https://docs.opencv.org/4.1.1/d7/d9f/tutorial_linux_install.html)
-
-  ```bash
   cd $MECHEYE_PATH/3rdparty/src
-  ```
-
-  ```bash
   git clone https://github.com/opencv/opencv.git
-  ```
-
-  ```bash
   git clone https://github.com/opencv/opencv_contrib.git
-  ```
-
-  ```bash
   cd opencv
-  ```
-
-  ```bash
   mkdir build && cd build
-  ```
-
-  ```bash
   cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=$MECHEYE_PATH/3rdparty/opencv4 ..
-  ```
-
-  ```bash
   make -j7
-  ```
-
-  ```bash
   make install
   ```
 
+
 ### Instruction for Ubuntu 18.04
 
-- Install packages
-
-  ``` bash
-  sudo apt install libzmq5 libzmq3-dev
-  ```
-
-- Create directory for source code
+- Download this ROS interface
 
   ```bash
   mkdir -p ~/ros_ws/src && cd ~/ros_ws/src
-  ```
-
-- Clone the repository
-
-  ```bash
   git clone https://github.com/MechMindRobotics/mecheye_ros_interface
+  cd ~/ros_ws && catkin_make
   ```
 
-- Catkin make
+- Install dependencies
 
-  ```bash
-  cd ~/ros_ws && catkin_make
+  ``` bash
+  sudo apt install libzmq5 libzmq3-dev
   ```
 
 ## Brief intro to the interface

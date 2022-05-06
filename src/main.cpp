@@ -56,6 +56,11 @@ public:
         pub_pcl_color = nh.advertise<sensor_msgs::PointCloud2>("/mechmind/color_point_cloud", 1, true);
         pub_camera_info = nh.advertise<sensor_msgs::CameraInfo>("/mechmind/camera_info", 1, true);
 
+        service = nh.advertiseService("run_mechmind_camera", &MechMindCamera::get_camera_callback, this);
+    }
+
+    bool get_camera_callback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
+    {
         std::cout << "Find Mech-Eye device :" << std::endl;
 
         std::vector<mmind::api::MechEyeDeviceInfo> deviceInfoList =
@@ -123,30 +128,72 @@ public:
             showError(device.getDeviceIntri(intri));
         }
 
-        service = nh.advertiseService("run_mechmind_camera", &MechMindCamera::get_camera_callback, this);
-        while (ros::ok())
-        {
-            pub_rgb_image();
-        }
-    }
-
-    void pub_rgb_image()
-    {
         mmind::api::ColorMap colorMap;
         showError(device.captureColorMap(colorMap));
         cv::Mat color = cv::Mat(colorMap.height(), colorMap.width(), CV_8UC3, colorMap.data());
-        cv_bridge::CvImage cv_image;
-        cv_image.image = color;
-        cv_image.encoding = sensor_msgs::image_encodings::BGR8;
-        sensor_msgs::Image ros_image;
-        cv_image.toImageMsg(ros_image);
-        ros_image.header.frame_id = "mechmind_camera";
-        ros_image.header.stamp = ros::Time::now();
-        pub_color.publish(ros_image);
+
+        mmind::api::DepthMap depthMap;
+        showError(device.captureDepthMap(depthMap));
+        cv::Mat depth = cv::Mat(depthMap.height(), depthMap.width(), CV_32FC1, depthMap.data());
+
+        mmind::api::PointXYZMap pointXYZMap;
+        showError(device.capturePointXYZMap(pointXYZMap));
+        pcl::PointCloud<pcl::PointXYZ> cloud(pointXYZMap.width(), pointXYZMap.height());
+        uint32_t size = pointXYZMap.height() * pointXYZMap.width();
+        cloud.resize(size);
+
+        for (size_t i = 0; i < size; i++)
+        {
+            cloud[i].x = 0.001 * pointXYZMap[i].x;
+            cloud[i].y = 0.001 * pointXYZMap[i].y;
+            cloud[i].z = 0.001 * pointXYZMap[i].z;
+        }
+
+        pcl::PointCloud<pcl::PointXYZRGB> color_cloud(pointXYZMap.width(), pointXYZMap.height());
+        color_cloud.resize(size);
+
+        for (size_t i = 0; i < size; ++i)
+        {
+            color_cloud[i].x = 0.001 * pointXYZMap[i].x;
+            color_cloud[i].y = 0.001 * pointXYZMap[i].y;
+            color_cloud[i].z = 0.001 * pointXYZMap[i].z;
+
+            color_cloud[i].r = colorMap[i].r;
+            color_cloud[i].g = colorMap[i].g;
+            color_cloud[i].b = colorMap[i].b;
+        }
+
+
+        cv_bridge::CvImage cv_color;
+        cv_bridge::CvImage cv_depth;
+        cv_color.image = color;
+        cv_depth.image = depth;
+        cv_color.encoding = sensor_msgs::image_encodings::BGR8;
+        cv_depth.encoding = sensor_msgs::image_encodings::TYPE_32FC1;
+        sensor_msgs::Image ros_color;
+        sensor_msgs::Image ros_depth;
+        sensor_msgs::PointCloud2 ros_cloud;
+        sensor_msgs::PointCloud2 ros_color_cloud;
+        cv_color.toImageMsg(ros_color);
+        cv_depth.toImageMsg(ros_depth);
+        pcl::toROSMsg(cloud, ros_cloud);
+        pcl::toROSMsg(color_cloud, ros_color_cloud);
+        ros_color.header.frame_id = "mechmind_camera";
+        ros_color.header.stamp = ros::Time::now();
+        ros_depth.header.frame_id = "mechmind_camera";
+        ros_depth.header.stamp = ros::Time::now();
+        ros_cloud.header.frame_id = "mechmind_camera";
+        ros_cloud.header.stamp = ros::Time::now();
+        ros_color_cloud.header.frame_id = "mechmind_camera";
+        ros_color_cloud.header.stamp = ros::Time::now();
+        pub_color.publish(ros_color);
+        pub_depth.publish(ros_depth);
+        pub_pcl.publish(ros_cloud);
+        pub_pcl_color.publish(ros_color_cloud);
 
         // publish camera info
         sensor_msgs::CameraInfo camera_info;
-        camera_info.header.stamp = ros_image.header.stamp;
+        camera_info.header.stamp = ros_color.header.stamp;
         camera_info.header.frame_id = "mechmind_camera";
         camera_info.height = color.rows;
         camera_info.width = color.cols;
@@ -191,65 +238,11 @@ public:
             camera_info.P[i] = P[i];
         }
         pub_camera_info.publish(camera_info);
-    }
 
-    bool get_camera_callback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
-    {
-        mmind::api::DepthMap depthMap;
-        showError(device.captureDepthMap(depthMap));
-        cv::Mat depth = cv::Mat(depthMap.height(), depthMap.width(), CV_32FC1, depthMap.data());
-
-        mmind::api::PointXYZMap pointXYZMap;
-        showError(device.capturePointXYZMap(pointXYZMap));
-        pcl::PointCloud<pcl::PointXYZ> cloud(pointXYZMap.width(), pointXYZMap.height());
-        uint32_t size = pointXYZMap.height() * pointXYZMap.width();
-        cloud.resize(size);
-
-        for (size_t i = 0; i < size; i++)
-        {
-            cloud[i].x = 0.001 * pointXYZMap[i].x;
-            cloud[i].y = 0.001 * pointXYZMap[i].y;
-            cloud[i].z = 0.001 * pointXYZMap[i].z;
-        }
-
-        mmind::api::ColorMap colorMap;
-        showError(device.captureColorMap(colorMap));
-        pcl::PointCloud<pcl::PointXYZRGB> color_cloud(pointXYZMap.width(), pointXYZMap.height());
-        color_cloud.resize(size);
-
-        for (size_t i = 0; i < size; ++i)
-        {
-            color_cloud[i].x = 0.001 * pointXYZMap[i].x;
-            color_cloud[i].y = 0.001 * pointXYZMap[i].y;
-            color_cloud[i].z = 0.001 * pointXYZMap[i].z;
-
-            color_cloud[i].r = colorMap[i].r;
-            color_cloud[i].g = colorMap[i].g;
-            color_cloud[i].b = colorMap[i].b;
-        }
-
-        cv_bridge::CvImage cv_depth;
-        cv_depth.image = depth;
-        cv_depth.encoding = sensor_msgs::image_encodings::TYPE_32FC1;
-        sensor_msgs::Image ros_depth;
-        sensor_msgs::PointCloud2 ros_cloud;
-        sensor_msgs::PointCloud2 ros_color_cloud;
-        cv_depth.toImageMsg(ros_depth);
-        pcl::toROSMsg(cloud, ros_cloud);
-        pcl::toROSMsg(color_cloud, ros_color_cloud);
-        ros_depth.header.frame_id = "mechmind_camera";
-        ros_depth.header.stamp = ros::Time::now();
-        ros_cloud.header.frame_id = "mechmind_camera";
-        ros_cloud.header.stamp = ros::Time::now();
-        ros_color_cloud.header.frame_id = "mechmind_camera";
-        ros_color_cloud.header.stamp = ros::Time::now();
-
-        pub_pcl.publish(ros_cloud);
-        pub_depth.publish(ros_depth);
-        pub_pcl_color.publish(ros_color_cloud);
 
         if (save_file)
         {
+            cv::imwrite("/tmp/mechmind_color.png", color);
             cv::imwrite("/tmp/mechmind_depth.png", depth);
             pcl::PLYWriter().write("/tmp/mechmind_color_cloud.ply", color_cloud);
             pcl::PLYWriter().write("/tmp/mechmind_cloud.ply", cloud);

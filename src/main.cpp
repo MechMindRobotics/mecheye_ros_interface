@@ -56,7 +56,7 @@ public:
         pub_pcl_color = nh.advertise<sensor_msgs::PointCloud2>("/mechmind/color_point_cloud", 1, true);
         pub_camera_info = nh.advertise<sensor_msgs::CameraInfo>("/mechmind/camera_info", 1, true);
 
-        std::cout << "Find Mech-Eye device :" << std::endl;
+        std::cout << "Find Mech-Eye devices..." << std::endl;
 
         std::vector<mmind::api::MechEyeDeviceInfo> deviceInfoList =
         mmind::api::MechEyeDevice::enumerateMechEyeDeviceList(); if (deviceInfoList.empty())
@@ -87,7 +87,6 @@ public:
         }
 
         mmind::api::ErrorStatus status;
-        mmind::api::MechEyeDevice device;
         status = device.connect(deviceInfoList[inputIndex]);
 
         // Uncomment the following lines to connect a camera with ip inside .launch file
@@ -105,7 +104,7 @@ public:
             return;
         }
 
-        std::cout << "Connect Mech-Eye Success." << std::endl;
+        std::cout << "Connected to the Mech-Eye device successfully." << std::endl;
 
         mmind::api::MechEyeDeviceInfo deviceInfo;
         status = device.getDeviceInfo(deviceInfo);

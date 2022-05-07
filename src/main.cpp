@@ -107,7 +107,7 @@ public:
         std::cout << "Connected to the Mech-Eye device successfully." << std::endl;
 
         mmind::api::MechEyeDeviceInfo deviceInfo;
-        status = device.getDeviceInfo(deviceInfo);
+        showError(device.getDeviceInfo(deviceInfo));
         printDeviceInfo(deviceInfo);
 
         if (use_external_intri)
@@ -123,7 +123,7 @@ public:
         }
 
         service = nh.advertiseService("run_mechmind_camera", &MechMindCamera::get_camera_callback, this);
-        while (ros::ok())
+        while (ros::ok() && device.getDeviceInfo(deviceInfo).isOK())
         {
             pub_rgb_image();
         }

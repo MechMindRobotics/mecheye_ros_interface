@@ -249,9 +249,17 @@ public:
 
         if (save_file)
         {
-            cv::imwrite("/tmp/mechmind_depth.png", depth);
-            pcl::PLYWriter().write("/tmp/mechmind_color_cloud.ply", color_cloud);
-            pcl::PLYWriter().write("/tmp/mechmind_cloud.ply", cloud);
+            std::string depthPath = "/tmp/mechmind_depth.png";
+            cv::imwrite(depthPath, depth);
+            std::cout << "Depth image saved to: " << depthPath << std::endl;
+
+            std::string cloudPath = "/tmp/mechmind_cloud.ply"
+            pcl::PLYWriter().write(cloudPath, cloud);
+            std::cout << "Point cloud saved to: " << cloudPath << std::endl;
+
+            std::string colorCloudPath = "/tmp/mechmind_color_cloud.ply";
+            pcl::PLYWriter().write(colorCloudPath, color_cloud);
+            std::cout << "Color point cloud saved to: " << colorCloudPath << std::endl;
         }
         res.success = true;
         return true;

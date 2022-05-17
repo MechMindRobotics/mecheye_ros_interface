@@ -166,7 +166,7 @@ void MechMindCamera::publishDepthMap(mmind::api::DepthMap& depthMap)
     ros_depth.header.stamp = ros::Time::now();
     pub_depth.publish(ros_depth);
     if (save_file)
-        saveMap(depthMap, "/tmp/mechmind_depth.png")
+        saveMap(depthMap, "/tmp/mechmind_depth.png");
 }
 
 void MechMindCamera::publishPointCloud(mmind::api::PointXYZMap& pointXYZMap)
@@ -179,12 +179,12 @@ void MechMindCamera::publishPointCloud(mmind::api::PointXYZMap& pointXYZMap)
     ros_cloud.header.stamp = ros::Time::now();
     pub_pcl.publish(ros_cloud);
     if (save_file)
-        savePLY(pointXYZMap, "/tmp/mechmind_cloud.ply")
+        savePLY(pointXYZMap, "/tmp/mechmind_cloud.ply");
 }
 
 void MechMindCamera::publishColorPointCloud(mmind::api::PointXYZBGRMap& pointXYZBGRMap)
 {
-    pcl::PointCloud<pcl::PointXYZRGB> color_cloud(pointXYZMap.width(), pointXYZMap.height());
+    pcl::PointCloud<pcl::PointXYZRGB> color_cloud(pointXYZBGRMap.width(), pointXYZBGRMap.height());
     toPCL(color_cloud, pointXYZBGRMap);
     sensor_msgs::PointCloud2 ros_color_cloud;
     pcl::toROSMsg(color_cloud, ros_color_cloud);
@@ -192,7 +192,7 @@ void MechMindCamera::publishColorPointCloud(mmind::api::PointXYZBGRMap& pointXYZ
     ros_color_cloud.header.stamp = ros::Time::now();
     pub_pcl_color.publish(ros_color_cloud);
     if (save_file)
-        savePLY(pointXYZBGRMap, "/tmp/mechmind_color_cloud.ply")
+        savePLY(pointXYZBGRMap, "/tmp/mechmind_color_cloud.ply");
 }
 
 bool MechMindCamera::add_user_set_callback(AddUserSet::Request& req, AddUserSet::Response& res)
@@ -255,7 +255,7 @@ bool MechMindCamera::delete_user_set_callback(DeleteUserSet::Request& req, Delet
 bool MechMindCamera::device_info_callback(DeviceInfo::Request& req, DeviceInfo::Response& res)
 {
     mmind::api::MechEyeDeviceInfo deviceInfo;
-    mmind::api::ErrorStatus status = device.getDeviceInfo(deviceInfo).isOK();
+    mmind::api::ErrorStatus status = device.getDeviceInfo(deviceInfo);
     res.model = deviceInfo.model.c_str();
     res.id = deviceInfo.id.c_str();
     res.hardwareVersion = deviceInfo.hardwareVersion.c_str();
@@ -275,7 +275,7 @@ bool MechMindCamera::get_2d_expected_gray_value_callback(Get2DExpectedGrayValue:
 }
 bool MechMindCamera::get_2d_exposure_mode_callback(Get2DExposureMode::Request& req, Get2DExposureMode::Response& res)
 {
-    int mode = 4;
+    mmind::api::Scanning2DSettings::Scan2DExposureMode mode;
     mmind::api::ErrorStatus status = device.getScan2DExposureMode(mode);
     switch (mode)
     {
@@ -342,7 +342,7 @@ bool MechMindCamera::get_2d_tone_mapping_callback(Get2DToneMappingEnable::Reques
                                                   Get2DToneMappingEnable::Response& res)
 {
     bool value;
-    mmind::api::ErrorStatus status = devie.getScan2DToneMappingEnable(value);
+    mmind::api::ErrorStatus status = device.getScan2DToneMappingEnable(value);
     res.value = value;
     return status.isOK();
 }
@@ -350,7 +350,7 @@ bool MechMindCamera::get_2d_tone_mapping_callback(Get2DToneMappingEnable::Reques
 bool MechMindCamera::get_3d_exposure_callback(Get3DExposure::Request& req, Get3DExposure::Response& res)
 {
     std::vector<double> sequence;
-    mmind::api::ErrorStatus status = devie.getScan3DExposure(sequence);
+    mmind::api::ErrorStatus status = device.getScan3DExposure(sequence);
     res.sequence = sequence;
     return status.isOK();
 }
@@ -378,31 +378,32 @@ bool MechMindCamera::get_all_user_sets_callback(GetAllUserSets::Request& req, Ge
 {
     std::vector<std::string> sequence;
     mmind::api::ErrorStatus status = device.getAllUserSets(sequence);
-    std::vector<char*> charPtrSequence;
-    for (auto& s : sequence)
-    {
-        charPtrSequence.emplace_back(s.c_str());
-    }
-    res.sequence = charPtrSequence;
+    // std::vector<char*> charPtrSequence;
+    // for (auto& s : sequence)
+    // {
+    //     charPtrSequence.emplace_back(s.c_str());
+    // }
+    // res.sequence = charPtrSequence;
+    res.sequence = sequence;
     return status.isOK();
 }
 
 bool MechMindCamera::get_cloud_outlier_filter_mode_callback(GetCloudOutlierFilterMode::Request& req,
                                                             GetCloudOutlierFilterMode ::Response& res)
 {
-    int mode = 3;
+    mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode mode;
     mmind::api::ErrorStatus status = device.getCloudOutlierFilterMode(mode);
     switch (mode)
     {
-        case 0:
+        case mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Off:
             res.value = "Off";
             break;
 
-        case 1:
+        case mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Normal:
             res.value = "Normal";
             break;
 
-        case 2:
+        case mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Weak:
             res.value = "Weak";
             break;
 
@@ -415,23 +416,23 @@ bool MechMindCamera::get_cloud_outlier_filter_mode_callback(GetCloudOutlierFilte
 
 bool MechMindCamera::get_cloud_smooth_mode_callback(GetCloudSmoothMode::Request& req, GetCloudSmoothMode::Response& res)
 {
-    int mode = 4;
+    mmind::api::PointCloudProcessingSettings::CloudSmoothMode mode;
     mmind::api::ErrorStatus status = device.getCloudSmoothMode(mode);
     switch (mode)
     {
-        case 0:
+        case mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Off:
             res.value = "Off";
             break;
 
-        case 1:
+        case mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Normal:
             res.value = "Normal";
             break;
 
-        case 2:
+        case mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Weak:
             res.value = "Weak";
             break;
 
-        case 3:
+        case mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Strong:
             res.value = "Strong";
             break;
 
@@ -477,7 +478,7 @@ bool MechMindCamera::get_fringe_min_threshold_callback(GetFringeMinThreshold::Re
     return status.isOK();
 }
 
-bool MechMindCamera::get_laser_settings(GetLaserSettings::Request& req, GetLaserSettings::Response& res)
+bool MechMindCamera::get_laser_settings_callback(GetLaserSettings::Request& req, GetLaserSettings::Response& res)
 {
     mmind::api::LaserSettings laserSettings{ 2, -1, -1, -1, -1 };
     mmind::api::ErrorStatus status = device.getLaserSettings(laserSettings);
@@ -520,27 +521,16 @@ bool MechMindCamera::set_2d_expected_gray_value_callback(Set2DExpectedGrayValue:
 bool MechMindCamera::set_2d_exposure_mode_callback(Set2DExposureMode::Request& req, Set2DExposureMode::Response& res)
 {
     int mode;
-    switch (req.value.c_str())
-    {
-        case "Timed":
-            mode = 0;
-            break;
-
-        case "Auto":
-            mode = 1;
-            break;
-
-        case "HDR":
-            mode = 2;
-            break;
-
-        case "Flash":
-            mode = 3;
-            break;
-
-        default:
-            return false;
-    }
+    if (req.value.c_str() == "Timed")
+        mode = 0;
+    else if (req.value.c_str() == "Auto")
+        mode = 1;
+    else if (req.value.c_str() == "HDR")
+        mode = 2;
+    else if (req.value.c_str() == "Flash")
+        mode = 3;
+    else
+        return false;
     mmind::api::ErrorStatus status = device.setScan2DExposureMode(mode);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
@@ -620,24 +610,15 @@ bool MechMindCamera::set_3d_roi_callback(Set3DROI::Request& req, Set3DROI::Respo
 bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilterMode::Request& req,
                                                             SetCloudOutlierFilterMode ::Response& res)
 {
-    int mode;
-    switch (req.value.c_str())
-    {
-        case "Off":
-            mode = 0;
-            break;
-
-        case "Normal":
-            mode = 1;
-            break;
-
-        case "Weak":
-            mode = 2;
-            break;
-
-        default:
-            return false;
-    }
+    mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode mode;
+    if (req.value.c_str() == "Off")
+        mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Off;
+    else if (req.value.c_str() == "Normal")
+        mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Normal;
+    else if (req.value.c_str() == "Weak")
+        mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Weak;
+    else
+        return false;
     mmind::api::ErrorStatus status = device.setCloudOutlierFilterMode(mode);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
@@ -646,28 +627,17 @@ bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilte
 
 bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request& req, SetCloudSmoothMode::Response& res)
 {
-    int mode;
-    switch (req.value.c_str())
-    {
-        case "Off":
-            mode = 0;
-            break;
-
-        case "Normal":
-            mode = 1;
-            break;
-
-        case "Weak":
-            mode = 2;
-            break;
-
-        case "Strong":
-            mode = 3;
-            break;
-
-        default:
-            return false;
-    }
+    mmind::api::PointCloudProcessingSettings::CloudSmoothMode mode;
+    if (req.value.c_str() == "Off")
+        mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Off;
+    else if (req.value.c_str() == "Normal")
+        mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Normal;
+    else if (req.value.c_str() == "Weak")
+        mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Weak;
+    else if (req.value.c_str() == "Strong")
+        mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Strong;
+    else
+        return false;
     mmind::api::ErrorStatus status = device.setCloudSmoothMode(mode);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
@@ -709,7 +679,7 @@ bool MechMindCamera::set_fringe_min_threshold_callback(SetFringeMinThreshold::Re
     return status.isOK();
 }
 
-bool MechMindCamera::set_laser_settings(SetLaserSettings::Request& req, SetLaserSettings::Response& res)
+bool MechMindCamera::set_laser_settings_callback(SetLaserSettings::Request& req, SetLaserSettings::Response& res)
 {
     mmind::api::LaserSettings laserSettings{req.fringeCodingMode == "Fast" ? 0 : 1, req.frameRangeStart, req.frameRangeEnd, req.framePartitionCount, req.powerLevel};
     mmind::api::ErrorStatus status = device.setLaserSettings(laserSettings);

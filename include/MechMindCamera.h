@@ -149,7 +149,7 @@ private:
     bool get_fringe_contrast_threshold_callback(GetFringeContrastThreshold::Request& req,
                                                 GetFringeContrastThreshold::Response& res);
     bool get_fringe_min_threshold_callback(GetFringeMinThreshold::Request& req, GetFringeMinThreshold::Response& res);
-    bool get_laser_settings(GetLaserSettings::Request& req, GetLaserSettings::Response& res);
+    bool get_laser_settings_callback(GetLaserSettings::Request& req, GetLaserSettings::Response& res);
     bool save_all_settings_to_user_sets_callback(SaveAllSettingsToUserSets::Request& req,
                                                  SaveAllSettingsToUserSets::Response& res);
     bool set_2d_expected_gray_value_callback(Set2DExpectedGrayValue::Request& req,
@@ -172,9 +172,7 @@ private:
     bool set_fringe_contrast_threshold_callback(SetFringeContrastThreshold::Request& req,
                                                 SetFringeContrastThreshold::Response& res);
     bool set_fringe_min_threshold_callback(SetFringeMinThreshold::Request& req, SetFringeMinThreshold::Response& res);
-    bool set_laser_settings(SetLaserSettings::Request& req, SetLaserSettings::Response& res);
-
-    ~MechMindCamera() = default;
+    bool set_laser_settings_callback(SetLaserSettings::Request& req, SetLaserSettings::Response& res);
 };
 
 }  // namespace mecheye_ros_interface

@@ -13,7 +13,7 @@ find_package(Boost REQUIRED)
 find_package(PkgConfig REQUIRED)
 
 ## Find catkin and any catkin packages
-find_package(catkin REQUIRED COMPONENTS cv_bridge image_transport roscpp rospy std_msgs genmsg sensor_msgs tf)
+find_package(catkin REQUIRED COMPONENTS cv_bridge image_transport roscpp rospy std_msgs genmsg sensor_msgs tf message_generation)
 
 pkg_check_modules(JSONCPP REQUIRED jsoncpp)
 
@@ -66,8 +66,14 @@ add_service_files(
   Set2DExposureSequence.srv
 )
 
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  sensor_msgs
+)
+
 ## Declare a catkin package
-catkin_package(CATKIN_DEPENDS std_msgs roscpp)
+catkin_package(CATKIN_DEPENDS std_msgs roscpp message_runtime)
 
 
 include_directories(

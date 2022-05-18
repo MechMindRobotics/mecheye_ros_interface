@@ -135,8 +135,7 @@ private:
     bool get_2d_exposure_time_callback(Get2DExposureTime::Request& req, Get2DExposureTime::Response& res);
     bool get_2d_roi_callback(Get2DROI::Request& req, Get2DROI::Response& res);
     bool get_2d_sharpen_factor_callback(Get2DSharpenFactor::Request& req, Get2DSharpenFactor::Response& res);
-    bool get_2d_tone_mapping_callback(Get2DToneMappingEnable::Request& req,
-                                             Get2DToneMappingEnable::Response& res);
+    bool get_2d_tone_mapping_callback(Get2DToneMappingEnable::Request& req, Get2DToneMappingEnable::Response& res);
     bool get_3d_exposure_callback(Get3DExposure::Request& req, Get3DExposure::Response& res);
     bool get_3d_gain_callback(Get3DGain::Request& req, Get3DGain::Response& res);
     bool get_3d_roi_callback(Get3DROI::Request& req, Get3DROI::Response& res);
@@ -159,8 +158,7 @@ private:
     bool set_2d_exposure_time_callback(Set2DExposureTime::Request& req, Set2DExposureTime::Response& res);
     bool set_2d_roi_callback(Set2DROI::Request& req, Set2DROI::Response& res);
     bool set_2d_sharpen_factor_callback(Set2DSharpenFactor::Request& req, Set2DSharpenFactor::Response& res);
-    bool set_2d_tone_mapping_callback(Set2DToneMappingEnable::Request& req,
-                                             Set2DToneMappingEnable::Response& res);
+    bool set_2d_tone_mapping_callback(Set2DToneMappingEnable::Request& req, Set2DToneMappingEnable::Response& res);
     bool set_3d_exposure_callback(Set3DExposure::Request& req, Set3DExposure::Response& res);
     bool set_3d_gain_callback(Set3DGain::Request& req, Set3DGain::Response& res);
     bool set_3d_roi_callback(Set3DROI::Request& req, Set3DROI::Response& res);

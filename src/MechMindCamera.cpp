@@ -42,7 +42,7 @@ MechMindCamera::MechMindCamera()
 
     // mmind::api::ErrorStatus status;
     // mmind::api::MechEyeDeviceInfo info;
-    // info.firmwareVersion = "1.5.0";
+    // info.firmwareVersion = "1.5.2";
     // info.ipAddress = camera_ip;
     // info.port = 5577;
     // status = device.connect(info);
@@ -79,6 +79,7 @@ MechMindCamera::MechMindCamera()
     capture_point_cloud_service =
         nh.advertiseService("capture_point_cloud", &MechMindCamera::capture_point_cloud_callback, this);
     delete_user_set_service = nh.advertiseService("delete_user_set", &MechMindCamera::delete_user_set_callback, this);
+    device_info_service = nh.advertiseService("device_info", &MechMindCamera::device_info_callback, this);
     get_2d_expected_gray_value_service =
         nh.advertiseService("get_2d_expected_gray_value", &MechMindCamera::get_2d_expected_gray_value_callback, this);
     get_2d_exposure_mode_service =
@@ -110,6 +111,8 @@ MechMindCamera::MechMindCamera()
         nh.advertiseService("get_fringe_min_threshold", &MechMindCamera::get_fringe_min_threshold_callback, this);
     get_laser_settings_service =
         nh.advertiseService("get_laser_settings", &MechMindCamera::get_laser_settings_callback, this);
+    save_all_settings_to_user_sets_service = nh.advertiseService(
+        "save_all_settings_to_user_sets", &MechMindCamera::save_all_settings_to_user_sets_callback, this);
     set_2d_expected_gray_value_service =
         nh.advertiseService("set_2d_expected_gray_value", &MechMindCamera::set_2d_expected_gray_value_callback, this);
     set_2d_exposure_mode_service =
@@ -200,6 +203,7 @@ void MechMindCamera::publishColorPointCloud(mmind::api::PointXYZBGRMap& pointXYZ
 bool MechMindCamera::add_user_set_callback(AddUserSet::Request& req, AddUserSet::Response& res)
 {
     mmind::api::ErrorStatus status = device.addUserSet({ req.value.c_str() });
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -209,6 +213,7 @@ bool MechMindCamera::capture_color_map_callback(CaptureColorMap::Request& req, C
 {
     mmind::api::ColorMap colorMap;
     mmind::api::ErrorStatus status = device.captureColorMap(colorMap);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishColorMap(colorMap);
@@ -220,6 +225,7 @@ bool MechMindCamera::capture_color_point_cloud_callback(CaptureColorPointCloud::
 {
     mmind::api::PointXYZBGRMap pointXYZBGRMap;
     mmind::api::ErrorStatus status = device.capturePointXYZBGRMap(pointXYZBGRMap);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishColorPointCloud(pointXYZBGRMap);
@@ -230,6 +236,7 @@ bool MechMindCamera::capture_depth_map_callback(CaptureDepthMap::Request& req, C
 {
     mmind::api::DepthMap depthMap;
     mmind::api::ErrorStatus status = device.captureDepthMap(depthMap);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishDepthMap(depthMap);
@@ -240,6 +247,7 @@ bool MechMindCamera::capture_point_cloud_callback(CapturePointCloud::Request& re
 {
     mmind::api::PointXYZMap pointXYZMap;
     mmind::api::ErrorStatus status = device.capturePointXYZMap(pointXYZMap);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishPointCloud(pointXYZMap);
@@ -249,6 +257,7 @@ bool MechMindCamera::capture_point_cloud_callback(CapturePointCloud::Request& re
 bool MechMindCamera::delete_user_set_callback(DeleteUserSet::Request& req, DeleteUserSet::Response& res)
 {
     mmind::api::ErrorStatus status = device.deleteUserSet({ req.value.c_str() });
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -258,6 +267,7 @@ bool MechMindCamera::device_info_callback(DeviceInfo::Request& req, DeviceInfo::
 {
     mmind::api::MechEyeDeviceInfo deviceInfo;
     mmind::api::ErrorStatus status = device.getDeviceInfo(deviceInfo);
+    showError(status);
     res.model = deviceInfo.model.c_str();
     res.id = deviceInfo.id.c_str();
     res.hardwareVersion = deviceInfo.hardwareVersion.c_str();
@@ -272,6 +282,7 @@ bool MechMindCamera::get_2d_expected_gray_value_callback(Get2DExpectedGrayValue:
 {
     int value;
     mmind::api::ErrorStatus status = device.getScan2DExpectedGrayValue(value);
+    showError(status);
     res.value = value;
     return status.isOK();
 }
@@ -279,6 +290,7 @@ bool MechMindCamera::get_2d_exposure_mode_callback(Get2DExposureMode::Request& r
 {
     mmind::api::Scanning2DSettings::Scan2DExposureMode mode;
     mmind::api::ErrorStatus status = device.getScan2DExposureMode(mode);
+    showError(status);
     switch (mode)
     {
         case 0:
@@ -309,6 +321,7 @@ bool MechMindCamera::get_2d_exposure_sequence_callback(Get2DExposureSequence::Re
 {
     std::vector<double> sequence;
     mmind::api::ErrorStatus status = device.getScan2DHDRExposureSequence(sequence);
+    showError(status);
     res.sequence = sequence;
     return status.isOK();
 }
@@ -317,6 +330,7 @@ bool MechMindCamera::get_2d_exposure_time_callback(Get2DExposureTime::Request& r
 {
     double value = -1;
     mmind::api::ErrorStatus status = device.getScan2DExposureTime(value);
+    showError(status);
     res.value = value;
     return status.isOK();
 }
@@ -325,6 +339,7 @@ bool MechMindCamera::get_2d_roi_callback(Get2DROI::Request& req, Get2DROI::Respo
 {
     mmind::api::ROI roi;
     mmind::api::ErrorStatus status = device.getScan2DROI(roi);
+    showError(status);
     res.x = roi.x;
     res.y = roi.y;
     res.width = roi.width;
@@ -336,6 +351,7 @@ bool MechMindCamera::get_2d_sharpen_factor_callback(Get2DSharpenFactor::Request&
 {
     double value = -1;
     mmind::api::ErrorStatus status = device.getScan2DSharpenFactor(value);
+    showError(status);
     res.value = value;
     return status.isOK();
 }
@@ -345,6 +361,7 @@ bool MechMindCamera::get_2d_tone_mapping_callback(Get2DToneMappingEnable::Reques
 {
     bool value;
     mmind::api::ErrorStatus status = device.getScan2DToneMappingEnable(value);
+    showError(status);
     res.value = value;
     return status.isOK();
 }
@@ -353,6 +370,7 @@ bool MechMindCamera::get_3d_exposure_callback(Get3DExposure::Request& req, Get3D
 {
     std::vector<double> sequence;
     mmind::api::ErrorStatus status = device.getScan3DExposure(sequence);
+    showError(status);
     res.sequence = sequence;
     return status.isOK();
 }
@@ -361,6 +379,7 @@ bool MechMindCamera::get_3d_gain_callback(Get3DGain::Request& req, Get3DGain::Re
 {
     double value = -1;
     mmind::api::ErrorStatus status = device.getScan3DGain(value);
+    showError(status);
     res.value = value;
     return status.isOK();
 }
@@ -369,6 +388,7 @@ bool MechMindCamera::get_3d_roi_callback(Get3DROI::Request& req, Get3DROI::Respo
 {
     mmind::api::ROI roi;
     mmind::api::ErrorStatus status = device.getScan3DROI(roi);
+    showError(status);
     res.x = roi.x;
     res.y = roi.y;
     res.width = roi.width;
@@ -380,6 +400,7 @@ bool MechMindCamera::get_all_user_sets_callback(GetAllUserSets::Request& req, Ge
 {
     std::vector<std::string> sequence;
     mmind::api::ErrorStatus status = device.getAllUserSets(sequence);
+    showError(status);
     // std::vector<char*> charPtrSequence;
     // for (auto& s : sequence)
     // {
@@ -395,6 +416,7 @@ bool MechMindCamera::get_cloud_outlier_filter_mode_callback(GetCloudOutlierFilte
 {
     mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode mode;
     mmind::api::ErrorStatus status = device.getCloudOutlierFilterMode(mode);
+    showError(status);
     switch (mode)
     {
         case mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Off:
@@ -420,6 +442,7 @@ bool MechMindCamera::get_cloud_smooth_mode_callback(GetCloudSmoothMode::Request&
 {
     mmind::api::PointCloudProcessingSettings::CloudSmoothMode mode;
     mmind::api::ErrorStatus status = device.getCloudSmoothMode(mode);
+    showError(status);
     switch (mode)
     {
         case mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Off:
@@ -449,6 +472,7 @@ bool MechMindCamera::get_current_user_set_callback(GetCurrentUserSet::Request& r
 {
     std::string value;
     mmind::api::ErrorStatus status = device.getCurrentUserSet(value);
+    showError(status);
     res.value = value.c_str();
     return status.isOK();
 }
@@ -457,6 +481,7 @@ bool MechMindCamera::get_depth_range_callback(GetDepthRange::Request& req, GetDe
 {
     mmind::api::DepthRange depthRange;
     mmind::api::ErrorStatus status = device.getDepthRange(depthRange);
+    showError(status);
     res.lower = depthRange.lower;
     res.upper = depthRange.upper;
     return status.isOK();
@@ -467,6 +492,7 @@ bool MechMindCamera::get_fringe_contrast_threshold_callback(GetFringeContrastThr
 {
     int value;
     mmind::api::ErrorStatus status = device.getFringeContrastThreshold(value);
+    showError(status);
     res.value = value;
     return status.isOK();
 }
@@ -476,6 +502,7 @@ bool MechMindCamera::get_fringe_min_threshold_callback(GetFringeMinThreshold::Re
 {
     int value;
     mmind::api::ErrorStatus status = device.getFringeMinThreshold(value);
+    showError(status);
     res.value = value;
     return status.isOK();
 }
@@ -484,6 +511,7 @@ bool MechMindCamera::get_laser_settings_callback(GetLaserSettings::Request& req,
 {
     mmind::api::LaserSettings laserSettings{ 2, -1, -1, -1, -1 };
     mmind::api::ErrorStatus status = device.getLaserSettings(laserSettings);
+    showError(status);
     switch (laserSettings.FringeCodingMode)
     {
         case 0:
@@ -515,6 +543,7 @@ bool MechMindCamera::set_2d_expected_gray_value_callback(Set2DExpectedGrayValue:
                                                          Set2DExpectedGrayValue::Response& res)
 {
     mmind::api::ErrorStatus status = device.setScan2DExpectedGrayValue(req.value);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -523,17 +552,18 @@ bool MechMindCamera::set_2d_expected_gray_value_callback(Set2DExpectedGrayValue:
 bool MechMindCamera::set_2d_exposure_mode_callback(Set2DExposureMode::Request& req, Set2DExposureMode::Response& res)
 {
     int mode;
-    if (req.value.c_str() == "Timed")
+    if (req.value == "Timed")
         mode = 0;
-    else if (req.value.c_str() == "Auto")
+    else if (req.value == "Auto")
         mode = 1;
-    else if (req.value.c_str() == "HDR")
+    else if (req.value == "HDR")
         mode = 2;
-    else if (req.value.c_str() == "Flash")
+    else if (req.value == "Flash")
         mode = 3;
     else
         return false;
     mmind::api::ErrorStatus status = device.setScan2DExposureMode(mode);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -544,6 +574,7 @@ bool MechMindCamera::set_2d_exposure_sequence_callback(Set2DExposureSequence::Re
 {
     std::vector<double> sequence(begin(req.sequence), end(req.sequence));
     mmind::api::ErrorStatus status = device.setScan2DHDRExposureSequence(sequence);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -552,6 +583,7 @@ bool MechMindCamera::set_2d_exposure_sequence_callback(Set2DExposureSequence::Re
 bool MechMindCamera::set_2d_exposure_time_callback(Set2DExposureTime::Request& req, Set2DExposureTime::Response& res)
 {
     mmind::api::ErrorStatus status = device.setScan2DExposureTime(req.value);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -561,6 +593,7 @@ bool MechMindCamera::set_2d_roi_callback(Set2DROI::Request& req, Set2DROI::Respo
 {
     mmind::api::ROI roi{ req.x, req.y, req.width, req.height };
     mmind::api::ErrorStatus status = device.setScan2DROI(roi);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -569,6 +602,7 @@ bool MechMindCamera::set_2d_roi_callback(Set2DROI::Request& req, Set2DROI::Respo
 bool MechMindCamera::set_2d_sharpen_factor_callback(Set2DSharpenFactor::Request& req, Set2DSharpenFactor::Response& res)
 {
     mmind::api::ErrorStatus status = device.setScan2DSharpenFactor(req.value);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -578,6 +612,7 @@ bool MechMindCamera::set_2d_tone_mapping_callback(Set2DToneMappingEnable::Reques
                                                   Set2DToneMappingEnable::Response& res)
 {
     mmind::api::ErrorStatus status = device.setScan2DToneMappingEnable(req.value);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -587,6 +622,7 @@ bool MechMindCamera::set_3d_exposure_callback(Set3DExposure::Request& req, Set3D
 {
     std::vector<double> sequence(begin(req.sequence), end(req.sequence));
     mmind::api::ErrorStatus status = device.setScan3DExposure(sequence);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -595,6 +631,7 @@ bool MechMindCamera::set_3d_exposure_callback(Set3DExposure::Request& req, Set3D
 bool MechMindCamera::set_3d_gain_callback(Set3DGain::Request& req, Set3DGain::Response& res)
 {
     mmind::api::ErrorStatus status = device.setScan3DGain(req.value);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -604,6 +641,7 @@ bool MechMindCamera::set_3d_roi_callback(Set3DROI::Request& req, Set3DROI::Respo
 {
     mmind::api::ROI roi{ req.x, req.y, req.width, req.height };
     mmind::api::ErrorStatus status = device.setScan3DROI(roi);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -613,15 +651,16 @@ bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilte
                                                             SetCloudOutlierFilterMode ::Response& res)
 {
     mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode mode;
-    if (req.value.c_str() == "Off")
+    if (req.value == "Off")
         mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Off;
-    else if (req.value.c_str() == "Normal")
+    else if (req.value == "Normal")
         mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Normal;
-    else if (req.value.c_str() == "Weak")
+    else if (req.value == "Weak")
         mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Weak;
     else
         return false;
     mmind::api::ErrorStatus status = device.setCloudOutlierFilterMode(mode);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -630,17 +669,18 @@ bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilte
 bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request& req, SetCloudSmoothMode::Response& res)
 {
     mmind::api::PointCloudProcessingSettings::CloudSmoothMode mode;
-    if (req.value.c_str() == "Off")
+    if (req.value == "Off")
         mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Off;
-    else if (req.value.c_str() == "Normal")
+    else if (req.value == "Normal")
         mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Normal;
-    else if (req.value.c_str() == "Weak")
+    else if (req.value == "Weak")
         mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Weak;
-    else if (req.value.c_str() == "Strong")
+    else if (req.value == "Strong")
         mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Strong;
     else
         return false;
     mmind::api::ErrorStatus status = device.setCloudSmoothMode(mode);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -649,6 +689,7 @@ bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request&
 bool MechMindCamera::set_current_user_set_callback(SetCurrentUserSet::Request& req, SetCurrentUserSet::Response& res)
 {
     mmind::api::ErrorStatus status = device.setCurrentUserSet({ req.value.c_str() });
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -658,6 +699,7 @@ bool MechMindCamera::set_depth_range_callback(SetDepthRange::Request& req, SetDe
 {
     mmind::api::DepthRange depthRange{ req.lower, req.upper };
     mmind::api::ErrorStatus status = device.setDepthRange(depthRange);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -667,6 +709,7 @@ bool MechMindCamera::set_fringe_contrast_threshold_callback(SetFringeContrastThr
                                                             SetFringeContrastThreshold::Response& res)
 {
     mmind::api::ErrorStatus status = device.setFringeContrastThreshold(req.value);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -676,6 +719,7 @@ bool MechMindCamera::set_fringe_min_threshold_callback(SetFringeMinThreshold::Re
                                                        SetFringeMinThreshold::Response& res)
 {
     mmind::api::ErrorStatus status = device.setFringeMinThreshold(req.value);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();
@@ -686,6 +730,7 @@ bool MechMindCamera::set_laser_settings_callback(SetLaserSettings::Request& req,
     mmind::api::LaserSettings laserSettings{ req.fringeCodingMode == "Fast" ? 0 : 1, req.frameRangeStart,
                                              req.frameRangeEnd, req.framePartitionCount, req.powerLevel };
     mmind::api::ErrorStatus status = device.setLaserSettings(laserSettings);
+    showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     return status.isOK();

@@ -1,0 +1,9 @@
+# Fast High
+string fringeCodingMode
+int32 frameRangeStart
+int32 frameRangeEnd
+int32 framePartitionCount
+int32 powerLevel
+---
+int32 errorCode
+string errorDescription

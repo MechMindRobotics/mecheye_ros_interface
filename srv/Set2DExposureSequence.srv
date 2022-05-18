@@ -1,0 +1,4 @@
+float64[] sequence
+---
+int32 errorCode
+string errorDescription

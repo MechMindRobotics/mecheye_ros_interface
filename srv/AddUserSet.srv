@@ -1,0 +1,4 @@
+string value
+---
+int32 errorCode
+string errorDescription

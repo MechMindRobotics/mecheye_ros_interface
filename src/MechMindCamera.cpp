@@ -19,13 +19,15 @@ namespace mecheye_ros_interface
 
 MechMindCamera::MechMindCamera()
 {
-    nh.getParam("camera_ip", camera_ip);
-    nh.getParam("save_file", save_file);
-    nh.getParam("use_external_intri", use_external_intri);
-    nh.getParam("fx", fx);
-    nh.getParam("fy", fy);
-    nh.getParam("u", u);
-    nh.getParam("v", v);
+    ros::NodeHandle pnh("~");
+
+    pnh.getParam("camera_ip", camera_ip);
+    pnh.getParam("save_file", save_file);
+    pnh.getParam("use_external_intri", use_external_intri);
+    pnh.getParam("fx", fx);
+    pnh.getParam("fy", fy);
+    pnh.getParam("u", u);
+    pnh.getParam("v", v);
 
     pub_color = nh.advertise<sensor_msgs::Image>("/mechmind/color_image", 1, true);
     pub_depth = nh.advertise<sensor_msgs::Image>("/mechmind/depth_image", 1, true);
@@ -681,7 +683,8 @@ bool MechMindCamera::set_fringe_min_threshold_callback(SetFringeMinThreshold::Re
 
 bool MechMindCamera::set_laser_settings_callback(SetLaserSettings::Request& req, SetLaserSettings::Response& res)
 {
-    mmind::api::LaserSettings laserSettings{req.fringeCodingMode == "Fast" ? 0 : 1, req.frameRangeStart, req.frameRangeEnd, req.framePartitionCount, req.powerLevel};
+    mmind::api::LaserSettings laserSettings{ req.fringeCodingMode == "Fast" ? 0 : 1, req.frameRangeStart,
+                                             req.frameRangeEnd, req.framePartitionCount, req.powerLevel };
     mmind::api::ErrorStatus status = device.setLaserSettings(laserSettings);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();

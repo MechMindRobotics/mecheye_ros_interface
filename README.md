@@ -348,8 +348,8 @@ This service has five parameters:
 
 `fringeCodingMode` (string): Laser fringe coding mode to set. Options include 'Fast', and 'High'.
 `frameRangeStart` (int32): The laser scan field of view start position to set. Min: 0, Max: 100.  
-$$frameRangeEnd - frameRangeStart \geq 25$$
+frameRangeEnd - frameRangeStart >= 25
 `frameRangeEnd` (int32): The laser scan field of view end position to set. Min: 0, Max: 100.  
-$$frameRangeEnd - frameRangeStart \geq 25$$
+frameRangeEnd - frameRangeStart >= 25
 `framePartitionCount` (int32): Laser's scan partition number to set. Min: 1, Max: 4.
 `powerLevel` (int32): Laser's power level to set. Min: 20, Max: 100.

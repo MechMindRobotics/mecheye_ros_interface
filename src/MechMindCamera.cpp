@@ -259,7 +259,7 @@ bool MechMindCamera::add_user_set_callback(AddUserSet::Request& req, AddUserSet:
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::capture_color_map_callback(CaptureColorMap::Request& req, CaptureColorMap::Response& res)
@@ -270,7 +270,7 @@ bool MechMindCamera::capture_color_map_callback(CaptureColorMap::Request& req, C
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishColorMap(colorMap);
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::capture_color_point_cloud_callback(CaptureColorPointCloud::Request& req,
@@ -282,7 +282,7 @@ bool MechMindCamera::capture_color_point_cloud_callback(CaptureColorPointCloud::
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishColorPointCloud(pointXYZBGRMap);
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::capture_depth_map_callback(CaptureDepthMap::Request& req, CaptureDepthMap::Response& res)
@@ -293,7 +293,7 @@ bool MechMindCamera::capture_depth_map_callback(CaptureDepthMap::Request& req, C
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishDepthMap(depthMap);
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::capture_point_cloud_callback(CapturePointCloud::Request& req, CapturePointCloud::Response& res)
@@ -304,7 +304,7 @@ bool MechMindCamera::capture_point_cloud_callback(CapturePointCloud::Request& re
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishPointCloud(pointXYZMap);
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::delete_user_set_callback(DeleteUserSet::Request& req, DeleteUserSet::Response& res)
@@ -313,7 +313,7 @@ bool MechMindCamera::delete_user_set_callback(DeleteUserSet::Request& req, Delet
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::device_info_callback(DeviceInfo::Request& req, DeviceInfo::Response& res)
@@ -599,7 +599,7 @@ bool MechMindCamera::set_2d_expected_gray_value_callback(Set2DExpectedGrayValue:
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_exposure_mode_callback(Set2DExposureMode::Request& req, Set2DExposureMode::Response& res)
@@ -619,7 +619,7 @@ bool MechMindCamera::set_2d_exposure_mode_callback(Set2DExposureMode::Request& r
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_exposure_sequence_callback(Set2DExposureSequence::Request& req,
@@ -630,7 +630,7 @@ bool MechMindCamera::set_2d_exposure_sequence_callback(Set2DExposureSequence::Re
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_exposure_time_callback(Set2DExposureTime::Request& req, Set2DExposureTime::Response& res)
@@ -639,7 +639,7 @@ bool MechMindCamera::set_2d_exposure_time_callback(Set2DExposureTime::Request& r
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_roi_callback(Set2DROI::Request& req, Set2DROI::Response& res)
@@ -649,7 +649,7 @@ bool MechMindCamera::set_2d_roi_callback(Set2DROI::Request& req, Set2DROI::Respo
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_sharpen_factor_callback(Set2DSharpenFactor::Request& req, Set2DSharpenFactor::Response& res)
@@ -658,7 +658,7 @@ bool MechMindCamera::set_2d_sharpen_factor_callback(Set2DSharpenFactor::Request&
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_tone_mapping_callback(Set2DToneMappingEnable::Request& req,
@@ -668,7 +668,7 @@ bool MechMindCamera::set_2d_tone_mapping_callback(Set2DToneMappingEnable::Reques
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_3d_exposure_callback(Set3DExposure::Request& req, Set3DExposure::Response& res)
@@ -678,7 +678,7 @@ bool MechMindCamera::set_3d_exposure_callback(Set3DExposure::Request& req, Set3D
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_3d_gain_callback(Set3DGain::Request& req, Set3DGain::Response& res)
@@ -687,7 +687,7 @@ bool MechMindCamera::set_3d_gain_callback(Set3DGain::Request& req, Set3DGain::Re
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_3d_roi_callback(Set3DROI::Request& req, Set3DROI::Response& res)
@@ -697,7 +697,7 @@ bool MechMindCamera::set_3d_roi_callback(Set3DROI::Request& req, Set3DROI::Respo
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilterMode::Request& req,
@@ -716,7 +716,7 @@ bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilte
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request& req, SetCloudSmoothMode::Response& res)
@@ -736,7 +736,7 @@ bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request&
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_current_user_set_callback(SetCurrentUserSet::Request& req, SetCurrentUserSet::Response& res)
@@ -745,7 +745,7 @@ bool MechMindCamera::set_current_user_set_callback(SetCurrentUserSet::Request& r
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_depth_range_callback(SetDepthRange::Request& req, SetDepthRange::Response& res)
@@ -755,7 +755,7 @@ bool MechMindCamera::set_depth_range_callback(SetDepthRange::Request& req, SetDe
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_fringe_contrast_threshold_callback(SetFringeContrastThreshold::Request& req,
@@ -765,7 +765,7 @@ bool MechMindCamera::set_fringe_contrast_threshold_callback(SetFringeContrastThr
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_fringe_min_threshold_callback(SetFringeMinThreshold::Request& req,
@@ -775,7 +775,7 @@ bool MechMindCamera::set_fringe_min_threshold_callback(SetFringeMinThreshold::Re
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_laser_settings_callback(SetLaserSettings::Request& req, SetLaserSettings::Response& res)
@@ -786,7 +786,7 @@ bool MechMindCamera::set_laser_settings_callback(SetLaserSettings::Request& req,
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 }  // namespace mecheye_ros_interface

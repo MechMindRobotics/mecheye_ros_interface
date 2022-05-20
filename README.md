@@ -56,6 +56,12 @@ Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](ht
   rosservice call [/service] [arguments]
   ```
 
+  ```bash
+  # Example
+  rosservice call /set_cloud_outlier_filter_mode '!!str Off'
+  rosservice call /set_laser_settings 'Fast' 0 50 1 20
+  ```
+
 - Select a camera in LAN to connect and call a service.
 - Call other functions available in the [SDK](https://www.mech-mind.com/download/camera-sdk.html) documentation.
 
@@ -321,7 +327,7 @@ Invoke this service to set the current depth image's valid range along Z-axis in
 
 This service has two parameters:
 
-`lower` (int32): The lower limit of the roi on the z value of the depth map in the camera coordinate system.
+`lower` (int32): The lower limit of the roi on the z value of the depth map in the camera coordinate system.  
 `upper` (int32): The upper limit of the roi on the z value of the depth map in the camera coordinate system.
 
 ### [set_fringe_contrast_threshold](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetFringeContrastThreshold.srv)
@@ -346,7 +352,7 @@ Invoke this service to set the current laser settings.
 
 This service has five parameters:
 
-`fringeCodingMode` (string): Laser fringe coding mode to set. Options include 'Fast', and 'High'.
+`fringeCodingMode` (string): Laser fringe coding mode to set. Options include 'Fast', and 'High'.  
 `frameRangeStart` (int32): The laser scan field of view start position to set. Min: 0, Max: 100.  
 frameRangeEnd - frameRangeStart >= 25  
 `frameRangeEnd` (int32): The laser scan field of view end position to set. Min: 0, Max: 100.  

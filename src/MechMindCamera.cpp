@@ -1,9 +1,9 @@
-#include "MechMindCamera.h"
+#include <MechMindCamera.h>
 #include <SampleUtil.h>
 #include <OpenCVUtil.h>
 #include <PclUtil.h>
 #include <opencv2/imgcodecs.hpp>
-#include "std_msgs/String.h"
+#include <std_msgs/String.h>
 #include <sstream>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
@@ -72,7 +72,7 @@ MechMindCamera::MechMindCamera()
     add_user_set_service = nh.advertiseService("add_user_set", &MechMindCamera::add_user_set_callback, this);
     capture_color_map_service =
         nh.advertiseService("capture_color_map", &MechMindCamera::capture_color_map_callback, this);
-    capture_color_point_cloud_service = nh.advertiseService("capture_color_point_cloud_service",
+    capture_color_point_cloud_service = nh.advertiseService("capture_color_point_cloud",
                                                             &MechMindCamera::capture_color_point_cloud_callback, this);
     capture_depth_map_service =
         nh.advertiseService("capture_depth_map", &MechMindCamera::capture_depth_map_callback, this);
@@ -152,9 +152,10 @@ void MechMindCamera::publishColorMap(mmind::api::ColorMap& colorMap)
     cv_image.encoding = sensor_msgs::image_encodings::BGR8;
     sensor_msgs::Image ros_image;
     cv_image.toImageMsg(ros_image);
-    ros_image.header.frame_id = "mechmind_camera";
+    ros_image.header.frame_id = "mechmind_camera/color_map";
     ros_image.header.stamp = ros::Time::now();
     pub_color.publish(ros_image);
+    publishCameraInfo(ros_image.header, colorMap.width(), colorMap.height());
     if (save_file)
         saveMap(colorMap, "/tmp/mechmind_color.png");
 }
@@ -167,9 +168,10 @@ void MechMindCamera::publishDepthMap(mmind::api::DepthMap& depthMap)
     cv_depth.encoding = sensor_msgs::image_encodings::TYPE_32FC1;
     sensor_msgs::Image ros_depth;
     cv_depth.toImageMsg(ros_depth);
-    ros_depth.header.frame_id = "mechmind_camera";
+    ros_depth.header.frame_id = "mechmind_camera/depth_map";
     ros_depth.header.stamp = ros::Time::now();
     pub_depth.publish(ros_depth);
+    publishCameraInfo(ros_depth.header, depthMap.width(), depthMap.height());
     if (save_file)
         saveMap(depthMap, "/tmp/mechmind_depth.png");
 }
@@ -180,9 +182,10 @@ void MechMindCamera::publishPointCloud(mmind::api::PointXYZMap& pointXYZMap)
     toPCL(cloud, pointXYZMap);
     sensor_msgs::PointCloud2 ros_cloud;
     pcl::toROSMsg(cloud, ros_cloud);
-    ros_cloud.header.frame_id = "mechmind_camera";
+    ros_cloud.header.frame_id = "mechmind_camera/point_cloud";
     ros_cloud.header.stamp = ros::Time::now();
     pub_pcl.publish(ros_cloud);
+    publishCameraInfo(ros_cloud.header, pointXYZMap.width(), pointXYZMap.height());
     if (save_file)
         savePLY(pointXYZMap, "/tmp/mechmind_cloud.ply");
 }
@@ -193,11 +196,61 @@ void MechMindCamera::publishColorPointCloud(mmind::api::PointXYZBGRMap& pointXYZ
     toPCL(color_cloud, pointXYZBGRMap);
     sensor_msgs::PointCloud2 ros_color_cloud;
     pcl::toROSMsg(color_cloud, ros_color_cloud);
-    ros_color_cloud.header.frame_id = "mechmind_camera";
+    ros_color_cloud.header.frame_id = "mechmind_camera/color_point_cloud";
     ros_color_cloud.header.stamp = ros::Time::now();
     pub_pcl_color.publish(ros_color_cloud);
+    publishCameraInfo(ros_color_cloud.header, pointXYZBGRMap.width(), pointXYZBGRMap.height());
     if (save_file)
         savePLY(pointXYZBGRMap, "/tmp/mechmind_color_cloud.ply");
+}
+
+void MechMindCamera::publishCameraInfo(const std_msgs::Header& header, int width, int height)
+{
+    sensor_msgs::CameraInfo camera_info;
+    camera_info.header = header;
+    camera_info.height = height;
+    camera_info.width = width;
+    camera_info.distortion_model = "plumb_bob";
+
+    camera_info.D = std::vector<double>(intri.distCoeffs, intri.distCoeffs + 5);
+
+    std::vector<double> K{ intri.cameraMatrix[0],
+                           0.0,
+                           intri.cameraMatrix[2],
+                           0.0,
+                           intri.cameraMatrix[1],
+                           intri.cameraMatrix[3],
+                           0.0,
+                           0.0,
+                           1.0 };
+    for (size_t i = 0; i < 9; ++i)
+    {
+        camera_info.K[i] = K[i];
+    }
+
+    std::vector<double> R{ 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 };
+    for (size_t i = 0; i < 9; ++i)
+    {
+        camera_info.R[i] = R[i];
+    }
+
+    std::vector<double> P{ intri.cameraMatrix[0],
+                           0.0,
+                           intri.cameraMatrix[2],
+                           0.0,
+                           0.0,
+                           intri.cameraMatrix[1],
+                           intri.cameraMatrix[3],
+                           0.0,
+                           0.0,
+                           0.0,
+                           1.0,
+                           0.0 };
+    for (size_t i = 0; i < 12; ++i)
+    {
+        camera_info.P[i] = P[i];
+    }
+    pub_camera_info.publish(camera_info);
 }
 
 bool MechMindCamera::add_user_set_callback(AddUserSet::Request& req, AddUserSet::Response& res)
@@ -206,7 +259,7 @@ bool MechMindCamera::add_user_set_callback(AddUserSet::Request& req, AddUserSet:
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::capture_color_map_callback(CaptureColorMap::Request& req, CaptureColorMap::Response& res)
@@ -217,7 +270,7 @@ bool MechMindCamera::capture_color_map_callback(CaptureColorMap::Request& req, C
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishColorMap(colorMap);
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::capture_color_point_cloud_callback(CaptureColorPointCloud::Request& req,
@@ -229,7 +282,7 @@ bool MechMindCamera::capture_color_point_cloud_callback(CaptureColorPointCloud::
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishColorPointCloud(pointXYZBGRMap);
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::capture_depth_map_callback(CaptureDepthMap::Request& req, CaptureDepthMap::Response& res)
@@ -240,7 +293,7 @@ bool MechMindCamera::capture_depth_map_callback(CaptureDepthMap::Request& req, C
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishDepthMap(depthMap);
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::capture_point_cloud_callback(CapturePointCloud::Request& req, CapturePointCloud::Response& res)
@@ -251,7 +304,7 @@ bool MechMindCamera::capture_point_cloud_callback(CapturePointCloud::Request& re
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
     publishPointCloud(pointXYZMap);
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::delete_user_set_callback(DeleteUserSet::Request& req, DeleteUserSet::Response& res)
@@ -260,7 +313,7 @@ bool MechMindCamera::delete_user_set_callback(DeleteUserSet::Request& req, Delet
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::device_info_callback(DeviceInfo::Request& req, DeviceInfo::Response& res)
@@ -546,7 +599,7 @@ bool MechMindCamera::set_2d_expected_gray_value_callback(Set2DExpectedGrayValue:
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_exposure_mode_callback(Set2DExposureMode::Request& req, Set2DExposureMode::Response& res)
@@ -566,7 +619,7 @@ bool MechMindCamera::set_2d_exposure_mode_callback(Set2DExposureMode::Request& r
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_exposure_sequence_callback(Set2DExposureSequence::Request& req,
@@ -577,7 +630,7 @@ bool MechMindCamera::set_2d_exposure_sequence_callback(Set2DExposureSequence::Re
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_exposure_time_callback(Set2DExposureTime::Request& req, Set2DExposureTime::Response& res)
@@ -586,7 +639,7 @@ bool MechMindCamera::set_2d_exposure_time_callback(Set2DExposureTime::Request& r
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_roi_callback(Set2DROI::Request& req, Set2DROI::Response& res)
@@ -596,7 +649,7 @@ bool MechMindCamera::set_2d_roi_callback(Set2DROI::Request& req, Set2DROI::Respo
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_sharpen_factor_callback(Set2DSharpenFactor::Request& req, Set2DSharpenFactor::Response& res)
@@ -605,7 +658,7 @@ bool MechMindCamera::set_2d_sharpen_factor_callback(Set2DSharpenFactor::Request&
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_2d_tone_mapping_callback(Set2DToneMappingEnable::Request& req,
@@ -615,7 +668,7 @@ bool MechMindCamera::set_2d_tone_mapping_callback(Set2DToneMappingEnable::Reques
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_3d_exposure_callback(Set3DExposure::Request& req, Set3DExposure::Response& res)
@@ -625,7 +678,7 @@ bool MechMindCamera::set_3d_exposure_callback(Set3DExposure::Request& req, Set3D
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_3d_gain_callback(Set3DGain::Request& req, Set3DGain::Response& res)
@@ -634,7 +687,7 @@ bool MechMindCamera::set_3d_gain_callback(Set3DGain::Request& req, Set3DGain::Re
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_3d_roi_callback(Set3DROI::Request& req, Set3DROI::Response& res)
@@ -644,7 +697,7 @@ bool MechMindCamera::set_3d_roi_callback(Set3DROI::Request& req, Set3DROI::Respo
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilterMode::Request& req,
@@ -663,7 +716,7 @@ bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilte
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request& req, SetCloudSmoothMode::Response& res)
@@ -683,7 +736,7 @@ bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request&
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_current_user_set_callback(SetCurrentUserSet::Request& req, SetCurrentUserSet::Response& res)
@@ -692,7 +745,7 @@ bool MechMindCamera::set_current_user_set_callback(SetCurrentUserSet::Request& r
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_depth_range_callback(SetDepthRange::Request& req, SetDepthRange::Response& res)
@@ -702,7 +755,7 @@ bool MechMindCamera::set_depth_range_callback(SetDepthRange::Request& req, SetDe
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_fringe_contrast_threshold_callback(SetFringeContrastThreshold::Request& req,
@@ -712,7 +765,7 @@ bool MechMindCamera::set_fringe_contrast_threshold_callback(SetFringeContrastThr
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_fringe_min_threshold_callback(SetFringeMinThreshold::Request& req,
@@ -722,7 +775,7 @@ bool MechMindCamera::set_fringe_min_threshold_callback(SetFringeMinThreshold::Re
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 bool MechMindCamera::set_laser_settings_callback(SetLaserSettings::Request& req, SetLaserSettings::Response& res)
@@ -733,7 +786,7 @@ bool MechMindCamera::set_laser_settings_callback(SetLaserSettings::Request& req,
     showError(status);
     res.errorCode = status.errorCode;
     res.errorDescription = status.errorDescription.c_str();
-    return status.isOK();
+    return true;
 }
 
 }  // namespace mecheye_ros_interface

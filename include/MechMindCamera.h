@@ -76,6 +76,7 @@ private:
     void publishDepthMap(mmind::api::DepthMap& depthMap);
     void publishPointCloud(mmind::api::PointXYZMap& pointXYZMap);
     void publishColorPointCloud(mmind::api::PointXYZBGRMap& pointXYZBGRMap);
+    void publishCameraInfo(const std_msgs::Header& header, int width, int height);
 
     ros::ServiceServer add_user_set_service;
     ros::ServiceServer capture_color_map_service;

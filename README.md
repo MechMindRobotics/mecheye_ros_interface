@@ -20,7 +20,7 @@ This API supports Ubuntu 16.04 with ROS Kinetic, Ubuntu 18.04 with ROS Melodic a
 
 ### Install Mech-Eye SDK
 
-Download and install MechEyeApi_1.5.1 compatible with Ubuntu from this [link](https://www.mech-mind.com/download/camera-sdk.html).
+Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](https://www.mech-mind.com/download/camera-sdk.html).
 
 ### Install the Interace
 
@@ -38,8 +38,8 @@ Download and install MechEyeApi_1.5.1 compatible with Ubuntu from this [link](ht
 - Interface functions can be found in the documentation inside [Mech-Eye SDK](https://www.mech-mind.com/download/camera-sdk.html).
 - Change config in `~/ros_ws/src/mecheye_ros_interface/launch/start_camera.launch`
   - save_file: `true` to enable save file, otherwise keep it as `false`
-  - camera_ip: change to your camera ip address here (also remember to uncomment the lines in `main.cpp` to connect to a specific camera)
-  - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/main.cpp`.
+  - camera_ip: change to your camera ip address here (also remember to comment and uncomment the lines in `MechMindCamera.cpp` to connect to a specific camera)
+  - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/MechMindCamera.cpp`.
   - remember to catkin_make again after changing `main.cpp`.
 - Source the build workspace and run
 
@@ -53,7 +53,7 @@ Download and install MechEyeApi_1.5.1 compatible with Ubuntu from this [link](ht
 
   ```bash
   source ~/ros_ws/devel/setup.bash
-  rosservice call /[service]
+  rosservice call [/service] [arguments]
   ```
 
 - Select a camera in LAN to connect and call a service.
@@ -241,9 +241,9 @@ Only take effect when 2D exposure mode is `Auto` or `HDR`.
 
 This service has four parameters:
 
-`x` (uint32): The column coordinates of the upper left point of the region of interest.
-`y` (uint32): The row coordinates of the upper left point of the region of interest.
-`width` (uint32): The width of the region of interest.
+`x` (uint32): The column coordinates of the upper left point of the region of interest.  
+`y` (uint32): The row coordinates of the upper left point of the region of interest.  
+`width` (uint32): The width of the region of interest.  
 `height` (uint32): The height of the region of interest.
 
 ### [set_2d_sharpen_factor](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set2DSharpenFactor.srv)
@@ -286,9 +286,9 @@ Invoke this service to set current depth map's ROI.
 
 This service has four parameters:
 
-`x` (uint32): The column coordinates of the upper left point of the region of interest.
-`y` (uint32): The row coordinates of the upper left point of the region of interest.
-`width` (uint32): The width of the region of interest.
+`x` (uint32): The column coordinates of the upper left point of the region of interest.  
+`y` (uint32): The row coordinates of the upper left point of the region of interest.  
+`width` (uint32): The width of the region of interest.  
 `height` (uint32): The height of the region of interest.
 
 ### [set_cloud_outlier_filter_mode](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetCloudOutlierFilterMode.srv)
@@ -348,8 +348,8 @@ This service has five parameters:
 
 `fringeCodingMode` (string): Laser fringe coding mode to set. Options include 'Fast', and 'High'.
 `frameRangeStart` (int32): The laser scan field of view start position to set. Min: 0, Max: 100.  
-frameRangeEnd - frameRangeStart >= 25
+frameRangeEnd - frameRangeStart >= 25  
 `frameRangeEnd` (int32): The laser scan field of view end position to set. Min: 0, Max: 100.  
-frameRangeEnd - frameRangeStart >= 25
-`framePartitionCount` (int32): Laser's scan partition number to set. Min: 1, Max: 4.
+frameRangeEnd - frameRangeStart >= 25  
+`framePartitionCount` (int32): Laser's scan partition number to set. Min: 1, Max: 4.  
 `powerLevel` (int32): Laser's power level to set. Min: 20, Max: 100.

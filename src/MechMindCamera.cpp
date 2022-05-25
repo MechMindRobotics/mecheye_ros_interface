@@ -615,7 +615,7 @@ bool MechMindCamera::set_2d_exposure_mode_callback(Set2DExposureMode::Request& r
         mode = 3;
     else {
         res.errorCode = mmind::api::ErrorStatus::ErrorCode::MMIND_STATUS_PARAMETER_SET_ERROR;
-        res.errorDescription = "Invalid parameter.";
+        res.errorDescription = "Invalid parameter. Valid choices include 'Timed', 'Auto', 'HDR', and 'Flash'.";
         return true;
     }
     mmind::api::ErrorStatus status = device.setScan2DExposureMode(mode);
@@ -715,7 +715,7 @@ bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilte
         mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Weak;
     else {
         res.errorCode = mmind::api::ErrorStatus::ErrorCode::MMIND_STATUS_PARAMETER_SET_ERROR;
-        res.errorDescription = "Invalid parameter.";
+        res.errorDescription = "Invalid parameter. Valid choices include '!!str Off', 'Normal', and 'Weak'.";
         return true;
     }
     mmind::api::ErrorStatus status = device.setCloudOutlierFilterMode(mode);
@@ -738,7 +738,7 @@ bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request&
         mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Strong;
     else {
         res.errorCode = mmind::api::ErrorStatus::ErrorCode::MMIND_STATUS_PARAMETER_SET_ERROR;
-        res.errorDescription = "Invalid parameter.";
+        res.errorDescription = "Invalid parameter. Valid choices include '!!str Off', 'Normal', 'Weak', and 'Strong'.";
         return true;
     }
     mmind::api::ErrorStatus status = device.setCloudSmoothMode(mode);

@@ -613,8 +613,11 @@ bool MechMindCamera::set_2d_exposure_mode_callback(Set2DExposureMode::Request& r
         mode = 2;
     else if (req.value == "Flash")
         mode = 3;
-    else
-        return false;
+    else {
+        res.errorCode = mmind::api::ErrorStatus::ErrorCode::MMIND_STATUS_PARAMETER_SET_ERROR;
+        res.errorDescription = "Invalid parameter.";
+        return true;
+    }
     mmind::api::ErrorStatus status = device.setScan2DExposureMode(mode);
     showError(status);
     res.errorCode = status.errorCode;
@@ -710,8 +713,11 @@ bool MechMindCamera::set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilte
         mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Normal;
     else if (req.value == "Weak")
         mode = mmind::api::PointCloudProcessingSettings::CloudOutlierFilterMode::Weak;
-    else
-        return false;
+    else {
+        res.errorCode = mmind::api::ErrorStatus::ErrorCode::MMIND_STATUS_PARAMETER_SET_ERROR;
+        res.errorDescription = "Invalid parameter.";
+        return true;
+    }
     mmind::api::ErrorStatus status = device.setCloudOutlierFilterMode(mode);
     showError(status);
     res.errorCode = status.errorCode;
@@ -730,8 +736,11 @@ bool MechMindCamera::set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request&
         mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Weak;
     else if (req.value == "Strong")
         mode = mmind::api::PointCloudProcessingSettings::CloudSmoothMode::Strong;
-    else
-        return false;
+    else {
+        res.errorCode = mmind::api::ErrorStatus::ErrorCode::MMIND_STATUS_PARAMETER_SET_ERROR;
+        res.errorDescription = "Invalid parameter.";
+        return true;
+    }
     mmind::api::ErrorStatus status = device.setCloudSmoothMode(mode);
     showError(status);
     res.errorCode = status.errorCode;

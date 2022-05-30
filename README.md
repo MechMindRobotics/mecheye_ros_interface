@@ -60,6 +60,9 @@ Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](ht
   # Example
   rosservice call /set_cloud_outlier_filter_mode '!!str Off'
   rosservice call /set_laser_settings 'Fast' 0 50 1 20
+  rosservice call /set_3d_exposure [3.2, 4.0]
+  rosservice call /add_user_set '!!str 123'
+  rosservice call /delete_user_set 'test'
   ```
 
 - Select a camera in LAN to connect and call a service.

@@ -16,7 +16,7 @@ This repository contains the official ROS interface for Mech-Eye camera.
 
 ### ROS
 
-This API supports Ubuntu 16.04 with ROS Kinetic, Ubuntu 18.04 with ROS Melodic and Ubuntu 20.04 with ROS Noetic.
+This API supports Ubuntu 16.04 with [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu), Ubuntu 18.04 with [ROS Melodic](http://wiki.ros.org/melodic/Installation/Ubuntu), and Ubuntu 20.04 with [ROS Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu).
 
 ### Install Mech-Eye SDK
 
@@ -40,16 +40,16 @@ Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](ht
   - save_file: `true` to enable save file, otherwise keep it as `false`
   - camera_ip: change to your camera ip address here (also remember to comment and uncomment the lines in `MechMindCamera.cpp` to connect to a specific camera)
   - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/MechMindCamera.cpp`.
-  - remember to catkin_make again after changing `main.cpp`.
-- Source the build workspace and run
+  - remember to catkin_make again after changing `*.cpp`.
+- Source the build workspace and use roslaunch
 
   ```bash
   source ~/ros_ws/devel/setup.bash
   roslaunch mecheye_ros_interface start_camera.launch 
   ```
 
-  Then, the camera will start working.
-- Open a new terminal, source the workspace and run
+  Select a camera in LAN. Then, the camera will start working.
+- Open a new terminal, source the workspace and call services
 
   ```bash
   source ~/ros_ws/devel/setup.bash
@@ -64,9 +64,6 @@ Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](ht
   rosservice call /add_user_set '!!str 123'
   rosservice call /delete_user_set 'test'
   ```
-
-- Select a camera in LAN to connect and call a service.
-- Call other functions available in the [SDK](https://www.mech-mind.com/download/camera-sdk.html) documentation.
 
 ## Topics
 

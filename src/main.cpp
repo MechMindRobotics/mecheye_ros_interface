@@ -1,6 +1,6 @@
 #include <MechMindCamera.h>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     ros::init(argc, argv, "mechmind_camera");
     ros::AsyncSpinner spinner(2);

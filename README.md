@@ -39,6 +39,7 @@ Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](ht
 - Change config in `~/ros_ws/src/mecheye_ros_interface/launch/start_camera.launch`
   - save_file: `true` to enable save file, otherwise keep it as `false`
   - camera_ip: change to your camera ip address here (also remember to comment and uncomment the lines in `MechMindCamera.cpp` to connect to a specific camera)
+  - tf related arguments: using quaternion for rotation parameters, to be changed to your calibrated parameters.
   - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/MechMindCamera.cpp`.
   - remember to catkin_make again after changing `*.cpp`.
 - Source the build workspace and use roslaunch

@@ -1,20 +1,34 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="save_file" default="false"/>
-    <arg name="camera_ip" default="192.168.0.123"/>
-    <arg name="use_external_intri" default="false"/>
-    <arg name="fx" default="1727.4641025602748"/>
-    <arg name="fy" default="1727.4586926701952"/>
-    <arg name="u" default="655.8180825729554"/>
-    <arg name="v" default="516.6306500606158"/>
+    <arg name="save_file" default="false" />
+    <arg name="camera_ip" default="172.24.144.1" />
+    <arg name="use_external_intri" default="false" />
+    <arg name="fx" default="1727.4641025602748" />
+    <arg name="fy" default="1727.4586926701952" />
+    <arg name="u" default="655.8180825729554" />
+    <arg name="v" default="516.6306500606158" />
+    <arg name="tf_x" default="0" />
+    <arg name="tf_y" default="0" />
+    <arg name="tf_z" default="0" />
+    <arg name="tf_qx" default="0" />
+    <arg name="tf_qy" default="0" />
+    <arg name="tf_qz" default="0" />
+    <arg name="tf_qw" default="1" />
 
     <node name="mechmind_camera_start" pkg="mecheye_ros_interface" type="start" output="screen">
-        <param name="save_file" value="$(arg save_file)"/>
-        <param name="camera_ip" value="$(arg camera_ip)"/>
-        <param name="use_external_intri" value="$(arg use_external_intri)"/>
-        <param name="fx" value="$(arg fx)"/>
-        <param name="fy" value="$(arg fy)"/>
-        <param name="u" value="$(arg u)"/>
-        <param name="v" value="$(arg v)"/>
+        <param name="save_file" value="$(arg save_file)" />
+        <param name="camera_ip" value="$(arg camera_ip)" />
+        <param name="use_external_intri" value="$(arg use_external_intri)" />
+        <param name="fx" value="$(arg fx)" />
+        <param name="fy" value="$(arg fy)" />
+        <param name="u" value="$(arg u)" />
+        <param name="v" value="$(arg v)" />
+        <param name="tf_x" value="$(arg tf_x)" />
+        <param name="tf_y" value="$(arg tf_y)" />
+        <param name="tf_z" value="$(arg tf_z)" />
+        <param name="tf_qx" value="$(arg tf_qx)" />
+        <param name="tf_qy" value="$(arg tf_qy)" />
+        <param name="tf_qz" value="$(arg tf_qz)" />
+        <param name="tf_qw" value="$(arg tf_qw)" />
     </node>
 </launch>

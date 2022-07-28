@@ -91,6 +91,7 @@ link_directories(/opt/mech-mind/mech-eye-sdk/lib)
 
 aux_source_directory(src SRC_LIST)
 add_executable(start ${SRC_LIST})
+add_dependencies(start mecheye_ros_interface_generate_messages_cpp ${catkin_EXPORTED_TARGETS})
 target_link_libraries(start
     ${PCL_LIBRARIES}
     ${OpenCV_LIBRARIES}

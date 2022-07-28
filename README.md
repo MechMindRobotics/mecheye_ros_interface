@@ -9,34 +9,34 @@ This repository contains the official ROS interface for Mech-Eye camera.
 |   Package    |    Version    |
 | :----------: | :-----------: |
 |    OpenCV    |     >= 3      |
-|     PCL      | >= 1.7 or 1.8 |
+|     PCL      |     >= 1.8    |
 |    Eigen     |     3.3.0     |
 |     VTK      |     6.3.0     |
-| Mech-Eye SDK |     1.5.1     |
+| Mech-Eye SDK |     1.6.0     |
 
 ### ROS
 
-This API supports Ubuntu 16.04 with [ROS Kinetic](http://wiki.ros.org/kinetic/Installation/Ubuntu), Ubuntu 18.04 with [ROS Melodic](http://wiki.ros.org/melodic/Installation/Ubuntu), and Ubuntu 20.04 with [ROS Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu).
+This API supports Ubuntu 18.04 with [ROS Melodic](http://wiki.ros.org/melodic/Installation/Ubuntu), and Ubuntu 20.04 with [ROS Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu).
 
 ### Install Mech-Eye SDK
 
-Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](https://www.mech-mind.com/download/camera-sdk.html).
+Download and install MechEyeApi_1.6.0 compatible with Ubuntu from this [link](https://www.mech-mind.com/download/camera-sdk.html).
 
 ### Install the Interace
 
 - Download this ROS interface
 
   ```bash
-  mkdir -p ~/ros_ws/src && cd ~/ros_ws/src
+  mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
   git clone https://github.com/MechMindRobotics/mecheye_ros_interface
-  cd ~/ros_ws && catkin_make
-  catkin_make # make twice to use generated service related .h files
+  cd ~/catkin_ws
+  catkin_make
   ```
 
 ## Brief intro to the interface
 
 - Interface functions can be found in the documentation inside [Mech-Eye SDK](https://www.mech-mind.com/download/camera-sdk.html).
-- Change config in `~/ros_ws/src/mecheye_ros_interface/launch/start_camera.launch`
+- Change config in `~/catkin_ws/src/mecheye_ros_interface/launch/start_camera.launch`
   - save_file: `true` to enable save file, otherwise keep it as `false`
   - camera_ip: change to your camera ip address here (also remember to comment and uncomment the lines in `MechMindCamera.cpp` to connect to a specific camera)
   - tf related arguments: using quaternion for rotation parameters, to be changed to your calibrated parameters.
@@ -45,7 +45,7 @@ Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](ht
 - Source the build workspace and use roslaunch
 
   ```bash
-  source ~/ros_ws/devel/setup.bash
+  source ~/catkin_ws/devel/setup.bash
   roslaunch mecheye_ros_interface start_camera.launch 
   ```
 
@@ -53,7 +53,7 @@ Download and install MechEyeApi_1.5.2 compatible with Ubuntu from this [link](ht
 - Open a new terminal, source the workspace and call services
 
   ```bash
-  source ~/ros_ws/devel/setup.bash
+  source ~/catkin_ws/devel/setup.bash
   rosservice call [/service] [arguments]
   ```
 
@@ -353,7 +353,7 @@ Invoke this service to set the current laser settings.
 
 This service has five parameters:
 
-`fringeCodingMode` (string): Laser fringe coding mode to set. Options include 'Fast', and 'High'.  
+`fringeCodingMode` (string): Laser fringe coding mode to set. Options include 'Fast', and 'Accurate'.  
 `frameRangeStart` (int32): The laser scan field of view start position to set. Min: 0, Max: 100.  
 frameRangeEnd - frameRangeStart >= 25  
 `frameRangeEnd` (int32): The laser scan field of view end position to set. Min: 0, Max: 100.  

@@ -95,10 +95,14 @@ namespace mecheye_ros_interface
 
         if (use_external_intri)
         {
-            intri.cameraMatrix[0] = fx;
-            intri.cameraMatrix[1] = fy;
-            intri.cameraMatrix[2] = u;
-            intri.cameraMatrix[3] = v;
+            intri.textureCameraIntri.cameraMatrix[0] = fx;
+            intri.textureCameraIntri.cameraMatrix[1] = fy;
+            intri.textureCameraIntri.cameraMatrix[2] = u;
+            intri.textureCameraIntri.cameraMatrix[3] = v;
+            intri.depthCameraIntri.cameraMatrix[0] = fx;
+            intri.depthCameraIntri.cameraMatrix[1] = fy;
+            intri.depthCameraIntri.cameraMatrix[2] = u;
+            intri.depthCameraIntri.cameraMatrix[3] = v;
         }
         else
         {
@@ -248,14 +252,14 @@ namespace mecheye_ros_interface
         camera_info.width = width;
         camera_info.distortion_model = "plumb_bob";
 
-        camera_info.D = std::vector<double>(intri.distCoeffs, intri.distCoeffs + 5);
+        camera_info.D = std::vector<double>(intri.textureCameraIntri.distortion, intri.textureCameraIntri.distortion + 5);
 
-        std::vector<double> K{intri.cameraMatrix[0],
+        std::vector<double> K{intri.textureCameraIntri.cameraMatrix[0],
                               0.0,
-                              intri.cameraMatrix[2],
+                              intri.textureCameraIntri.cameraMatrix[2],
                               0.0,
-                              intri.cameraMatrix[1],
-                              intri.cameraMatrix[3],
+                              intri.textureCameraIntri.cameraMatrix[1],
+                              intri.textureCameraIntri.cameraMatrix[3],
                               0.0,
                               0.0,
                               1.0};
@@ -270,13 +274,13 @@ namespace mecheye_ros_interface
             camera_info.R[i] = R[i];
         }
 
-        std::vector<double> P{intri.cameraMatrix[0],
+        std::vector<double> P{intri.textureCameraIntri.cameraMatrix[0],
                               0.0,
-                              intri.cameraMatrix[2],
+                              intri.textureCameraIntri.cameraMatrix[2],
                               0.0,
                               0.0,
-                              intri.cameraMatrix[1],
-                              intri.cameraMatrix[3],
+                              intri.textureCameraIntri.cameraMatrix[1],
+                              intri.textureCameraIntri.cameraMatrix[3],
                               0.0,
                               0.0,
                               0.0,
@@ -608,7 +612,7 @@ namespace mecheye_ros_interface
             break;
 
         case 1:
-            res.fringeCodingMode = "High";
+            res.fringeCodingMode = "Accurate";
             break;
 
         default:

@@ -21,20 +21,6 @@ add_service_files(
   DIRECTORY
   srv
   FILES
-  Set2DExposureTime.srv
-  Set2DROI.srv
-  Set2DSharpenFactor.srv
-  Set2DToneMappingEnable.srv
-  Set3DExposure.srv
-  Set3DGain.srv
-  Set3DROI.srv
-  SetCloudOutlierFilterMode.srv
-  SetCloudSmoothMode.srv
-  SetCurrentUserSet.srv
-  SetDepthRange.srv
-  SetFringeContrastThreshold.srv
-  SetFringeMinThreshold.srv
-  SetLaserSettings.srv
   AddUserSet.srv
   CaptureColorMap.srv
   CaptureColorPointCloud.srv
@@ -60,10 +46,30 @@ add_service_files(
   GetFringeContrastThreshold.srv
   GetFringeMinThreshold.srv
   GetLaserSettings.srv
+  GetUhpCaptureMode.srv
+  GetUhpFringeCodingMode.srv
+  GetUhpSettings.srv
   SaveAllSettingsToUserSets.srv
   Set2DExpectedGrayValue.srv
   Set2DExposureMode.srv
   Set2DExposureSequence.srv
+  Set2DExposureTime.srv
+  Set2DROI.srv
+  Set2DSharpenFactor.srv
+  Set2DToneMappingEnable.srv
+  Set3DExposure.srv
+  Set3DGain.srv
+  Set3DROI.srv
+  SetCloudOutlierFilterMode.srv
+  SetCloudSmoothMode.srv
+  SetCurrentUserSet.srv
+  SetDepthRange.srv
+  SetFringeContrastThreshold.srv
+  SetFringeMinThreshold.srv
+  SetLaserSettings.srv
+  SetUhpCaptureMode.srv
+  SetUhpFringeCodingMode.srv
+  SetUhpSettings.srv
 )
 
 generate_messages(

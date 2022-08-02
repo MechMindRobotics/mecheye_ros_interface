@@ -21,20 +21,6 @@ add_service_files(
   DIRECTORY
   srv
   FILES
-  Set2DExposureTime.srv
-  Set2DROI.srv
-  Set2DSharpenFactor.srv
-  Set2DToneMappingEnable.srv
-  Set3DExposure.srv
-  Set3DGain.srv
-  Set3DROI.srv
-  SetCloudOutlierFilterMode.srv
-  SetCloudSmoothMode.srv
-  SetCurrentUserSet.srv
-  SetDepthRange.srv
-  SetFringeContrastThreshold.srv
-  SetFringeMinThreshold.srv
-  SetLaserSettings.srv
   AddUserSet.srv
   CaptureColorMap.srv
   CaptureColorPointCloud.srv
@@ -60,10 +46,30 @@ add_service_files(
   GetFringeContrastThreshold.srv
   GetFringeMinThreshold.srv
   GetLaserSettings.srv
+  GetUhpCaptureMode.srv
+  GetUhpFringeCodingMode.srv
+  GetUhpSettings.srv
   SaveAllSettingsToUserSets.srv
   Set2DExpectedGrayValue.srv
   Set2DExposureMode.srv
   Set2DExposureSequence.srv
+  Set2DExposureTime.srv
+  Set2DROI.srv
+  Set2DSharpenFactor.srv
+  Set2DToneMappingEnable.srv
+  Set3DExposure.srv
+  Set3DGain.srv
+  Set3DROI.srv
+  SetCloudOutlierFilterMode.srv
+  SetCloudSmoothMode.srv
+  SetCurrentUserSet.srv
+  SetDepthRange.srv
+  SetFringeContrastThreshold.srv
+  SetFringeMinThreshold.srv
+  SetLaserSettings.srv
+  SetUhpCaptureMode.srv
+  SetUhpFringeCodingMode.srv
+  SetUhpSettings.srv
 )
 
 generate_messages(
@@ -91,6 +97,7 @@ link_directories(/opt/mech-mind/mech-eye-sdk/lib)
 
 aux_source_directory(src SRC_LIST)
 add_executable(start ${SRC_LIST})
+add_dependencies(start mecheye_ros_interface_generate_messages_cpp ${catkin_EXPORTED_TARGETS})
 target_link_libraries(start
     ${PCL_LIBRARIES}
     ${OpenCV_LIBRARIES}

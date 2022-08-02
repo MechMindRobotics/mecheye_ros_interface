@@ -25,6 +25,9 @@
 #include <mecheye_ros_interface/GetFringeContrastThreshold.h>
 #include <mecheye_ros_interface/GetFringeMinThreshold.h>
 #include <mecheye_ros_interface/GetLaserSettings.h>
+#include <mecheye_ros_interface/GetUhpCaptureMode.h>
+#include <mecheye_ros_interface/GetUhpFringeCodingMode.h>
+#include <mecheye_ros_interface/GetUhpSettings.h>
 #include <mecheye_ros_interface/SaveAllSettingsToUserSets.h>
 #include <mecheye_ros_interface/Set2DExpectedGrayValue.h>
 #include <mecheye_ros_interface/Set2DExposureMode.h>
@@ -43,6 +46,10 @@
 #include <mecheye_ros_interface/SetFringeContrastThreshold.h>
 #include <mecheye_ros_interface/SetFringeMinThreshold.h>
 #include <mecheye_ros_interface/SetLaserSettings.h>
+#include <mecheye_ros_interface/SetUhpCaptureMode.h>
+#include <mecheye_ros_interface/SetUhpFringeCodingMode.h>
+#include <mecheye_ros_interface/SetUhpSettings.h>
+
 
 namespace mecheye_ros_interface
 {
@@ -110,6 +117,9 @@ namespace mecheye_ros_interface
         ros::ServiceServer get_fringe_contrast_threshold_service;
         ros::ServiceServer get_fringe_min_threshold_service;
         ros::ServiceServer get_laser_settings_service;
+        ros::ServiceServer get_uhp_capture_mode_service;
+        ros::ServiceServer get_uhp_fringe_coding_mode_service;
+        ros::ServiceServer get_uhp_settings_service;
         ros::ServiceServer save_all_settings_to_user_sets_service;
         ros::ServiceServer set_2d_expected_gray_value_service;
         ros::ServiceServer set_2d_exposure_mode_service;
@@ -127,7 +137,10 @@ namespace mecheye_ros_interface
         ros::ServiceServer set_depth_range_service;
         ros::ServiceServer set_fringe_contrast_threshold_service;
         ros::ServiceServer set_fringe_min_threshold_service;
-        ros::ServiceServer set_laser_settings_service;
+        ros::ServiceServer set_laser_settings_service;  
+        ros::ServiceServer set_uhp_capture_mode_service;
+        ros::ServiceServer set_uhp_fringe_coding_mode_service;
+        ros::ServiceServer set_uhp_settings_service;
 
         bool add_user_set_callback(AddUserSet::Request &req, AddUserSet::Response &res);
         bool capture_color_map_callback(CaptureColorMap::Request &req, CaptureColorMap::Response &res);
@@ -157,6 +170,9 @@ namespace mecheye_ros_interface
                                                     GetFringeContrastThreshold::Response &res);
         bool get_fringe_min_threshold_callback(GetFringeMinThreshold::Request &req, GetFringeMinThreshold::Response &res);
         bool get_laser_settings_callback(GetLaserSettings::Request &req, GetLaserSettings::Response &res);
+        bool get_uhp_settings_callback(GetUhpSettings::Request &req, GetUhpSettings::Response &res);
+        bool get_uhp_capture_mode_callback(GetUhpCaptureMode::Request &req, GetUhpCaptureMode::Response &res);
+        bool get_uhp_fringe_coding_mode_callback(GetUhpFringeCodingMode::Request &req, GetUhpFringeCodingMode::Response &res);
         bool save_all_settings_to_user_sets_callback(SaveAllSettingsToUserSets::Request &req,
                                                      SaveAllSettingsToUserSets::Response &res);
         bool set_2d_expected_gray_value_callback(Set2DExpectedGrayValue::Request &req,
@@ -179,6 +195,8 @@ namespace mecheye_ros_interface
                                                     SetFringeContrastThreshold::Response &res);
         bool set_fringe_min_threshold_callback(SetFringeMinThreshold::Request &req, SetFringeMinThreshold::Response &res);
         bool set_laser_settings_callback(SetLaserSettings::Request &req, SetLaserSettings::Response &res);
+        bool set_uhp_settings_callback(SetUhpSettings::Request &req, SetUhpSettings::Response &res);
+        bool set_uhp_capture_mode_callback(SetUhpCaptureMode::Request &req, SetUhpCaptureMode::Response &res);
+        bool set_uhp_fringe_coding_mode_callback(SetUhpFringeCodingMode::Request &req, SetUhpFringeCodingMode::Response &res);
     };
-
 } // namespace mecheye_ros_interface

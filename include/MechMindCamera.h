@@ -28,6 +28,10 @@
 #include <mecheye_ros_interface/GetUhpCaptureMode.h>
 #include <mecheye_ros_interface/GetUhpFringeCodingMode.h>
 #include <mecheye_ros_interface/GetUhpSettings.h>
+#include <mecheye_ros_interface/GetProjectorFringeCodingMode.h>
+#include <mecheye_ros_interface/GetProjectorPowerLevel.h>
+#include <mecheye_ros_interface/GetProjectorAntiFlickerMode.h>
+
 #include <mecheye_ros_interface/SaveAllSettingsToUserSets.h>
 #include <mecheye_ros_interface/Set2DExpectedGrayValue.h>
 #include <mecheye_ros_interface/Set2DExposureMode.h>
@@ -50,6 +54,9 @@
 #include <mecheye_ros_interface/SetUhpFringeCodingMode.h>
 #include <mecheye_ros_interface/SetUhpSettings.h>
 
+#include <mecheye_ros_interface/SetProjectorFringeCodingMode.h>
+#include <mecheye_ros_interface/SetProjectorPowerLevel.h>
+#include <mecheye_ros_interface/SetProjectorAntiFlickerMode.h>
 
 namespace mecheye_ros_interface
 {
@@ -120,7 +127,12 @@ namespace mecheye_ros_interface
         ros::ServiceServer get_uhp_capture_mode_service;
         ros::ServiceServer get_uhp_fringe_coding_mode_service;
         ros::ServiceServer get_uhp_settings_service;
-        ros::ServiceServer save_all_settings_to_user_sets_service;
+
+        ros::ServiceServer get_projector_fringecodingmode_service;
+        ros::ServiceServer get_projector_powerlevel_service;
+        ros::ServiceServer get_projector_antiflickermode_service;
+
+	ros::ServiceServer save_all_settings_to_user_sets_service;
         ros::ServiceServer set_2d_expected_gray_value_service;
         ros::ServiceServer set_2d_exposure_mode_service;
         ros::ServiceServer set_2d_exposure_sequence_service;
@@ -141,6 +153,10 @@ namespace mecheye_ros_interface
         ros::ServiceServer set_uhp_capture_mode_service;
         ros::ServiceServer set_uhp_fringe_coding_mode_service;
         ros::ServiceServer set_uhp_settings_service;
+
+        ros::ServiceServer set_projector_fringecodingmode_service;
+        ros::ServiceServer set_projector_powerlevel_service;
+        ros::ServiceServer set_projector_antiflickermode_service;
 
         bool add_user_set_callback(AddUserSet::Request &req, AddUserSet::Response &res);
         bool capture_color_map_callback(CaptureColorMap::Request &req, CaptureColorMap::Response &res);
@@ -173,7 +189,12 @@ namespace mecheye_ros_interface
         bool get_uhp_settings_callback(GetUhpSettings::Request &req, GetUhpSettings::Response &res);
         bool get_uhp_capture_mode_callback(GetUhpCaptureMode::Request &req, GetUhpCaptureMode::Response &res);
         bool get_uhp_fringe_coding_mode_callback(GetUhpFringeCodingMode::Request &req, GetUhpFringeCodingMode::Response &res);
-        bool save_all_settings_to_user_sets_callback(SaveAllSettingsToUserSets::Request &req,
+        
+        bool get_projector_fringecodingmode_callback(GetProjectorFringeCodingMode::Request &req, GetProjectorFringeCodingMode::Response &res);
+        bool get_projector_powerlevel_callback(GetProjectorPowerLevel::Request &req, GetProjectorPowerLevel::Response &res);
+        bool get_projector_antiflickermode_callback(GetProjectorAntiFlickerMode::Request &req, GetProjectorAntiFlickerMode::Response &res);
+
+	bool save_all_settings_to_user_sets_callback(SaveAllSettingsToUserSets::Request &req,
                                                      SaveAllSettingsToUserSets::Response &res);
         bool set_2d_expected_gray_value_callback(Set2DExpectedGrayValue::Request &req,
                                                  Set2DExpectedGrayValue::Response &res);
@@ -198,5 +219,9 @@ namespace mecheye_ros_interface
         bool set_uhp_settings_callback(SetUhpSettings::Request &req, SetUhpSettings::Response &res);
         bool set_uhp_capture_mode_callback(SetUhpCaptureMode::Request &req, SetUhpCaptureMode::Response &res);
         bool set_uhp_fringe_coding_mode_callback(SetUhpFringeCodingMode::Request &req, SetUhpFringeCodingMode::Response &res);
+
+	bool set_projector_fringecodingmode_callback(SetProjectorFringeCodingMode::Request &req, SetProjectorFringeCodingMode::Response &res);
+        bool set_projector_powerlevel_callback(SetProjectorPowerLevel::Request &req, SetProjectorPowerLevel::Response &res);
+        bool set_projector_antiflickermode_callback(SetProjectorAntiFlickerMode::Request &req, SetProjectorAntiFlickerMode::Response &res);
     };
 } // namespace mecheye_ros_interface

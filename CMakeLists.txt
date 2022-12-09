@@ -49,6 +49,11 @@ add_service_files(
   GetUhpCaptureMode.srv
   GetUhpFringeCodingMode.srv
   GetUhpSettings.srv
+  
+  GetProjectorFringeCodingMode.srv
+  GetProjectorPowerLevel.srv
+  GetProjectorAntiFlickerMode.srv
+  
   SaveAllSettingsToUserSets.srv
   Set2DExpectedGrayValue.srv
   Set2DExposureMode.srv
@@ -70,6 +75,10 @@ add_service_files(
   SetUhpCaptureMode.srv
   SetUhpFringeCodingMode.srv
   SetUhpSettings.srv
+  
+  SetProjectorFringeCodingMode.srv
+  SetProjectorPowerLevel.srv
+  SetProjectorAntiFlickerMode.srv
 )
 
 generate_messages(

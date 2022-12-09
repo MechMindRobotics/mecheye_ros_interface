@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="save_file" default="false" />
+    <arg name="save_file" default="true" />
     <arg name="camera_ip" default="172.24.144.1" />      <!-- change to your camera ip -->
     <arg name="use_external_intri" default="false" />
     <arg name="fx" default="1727.4641025602748" />

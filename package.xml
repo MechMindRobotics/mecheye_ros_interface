@@ -4,10 +4,8 @@
   <version>0.0.2</version>
   <description>mecheye_ros_interface package for Mechmind 3D camera, modify from the official API from Mechmind</description>
 
-  <maintainer email="liang@informatik.uni-hamburg.de">Hongzhuo Liang</maintainer>
+  <maintainer email="service@mech-mind.net"></maintainer>
   <license>MIT</license>
-  <url type="website">tams.informatik.uni-hamburg.de</url>
-  <author email="liang@informatik.uni-hamburg.de">Hongzhuo Liang</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>

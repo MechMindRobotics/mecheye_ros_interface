@@ -608,7 +608,7 @@ This service has one parameter:
 
 - `value` (string): the `CloudSmoothMode` value to be set. Values include "Off", "Weak", "Normal" and "Strong".
 
-Example: set the value of `CloudSmoothMode` to "Off"
+Example: set the value of `CloudSmoothMode` to "Off "
 
   ```bash
   rosservice call /set_cloud_smooth_mode '!!str Off' # The value "Off" must be input as '!!str Off'.

@@ -21,7 +21,7 @@ This repository contains the ROS 1 interface for Mech-Eye Industrial 3D Camera.
 
 ### Install Mech-Eye API
 
-Download Mech-Eye API from [Mech-Mind's website](https://www.mech-mind.com/download/camera-sdk.html) and install it with `sudo apt`.
+Download Mech-Eye API from [Mech-Mind's website](https://www.mech-mind.com/download/softwaredownloading.html) and install it with `sudo apt`.
 
 ### Clone and Compile the Interface
 

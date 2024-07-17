@@ -1,3 +1,5 @@
+string name
+float64[] array
 ---
 int32 error_code
 string error_description

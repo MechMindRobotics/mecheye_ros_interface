@@ -1,0 +1,8 @@
+string name
+uint32 x
+uint32 y
+uint32 width
+uint32 height
+---
+int32 error_code
+string error_description

@@ -1,227 +1,175 @@
-#include <MechEyeApi.h>
+#pragma once
+#include <area_scan_3d_camera/Camera.h>
+#include <area_scan_3d_camera/CameraProperties.h>
+#include <area_scan_3d_camera/Frame3D.h>
 #include <ros/ros.h>
-#include <mecheye_ros_interface/AddUserSet.h>
-#include <mecheye_ros_interface/CaptureColorMap.h>
-#include <mecheye_ros_interface/CaptureColorPointCloud.h>
+#include <memory>
+#include <sensor_msgs/CameraInfo.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/point_cloud2_iterator.h>
+#include <cv_bridge/cv_bridge.h>
+#include <mecheye_ros_interface/CaptureColorImage.h>
+#include <mecheye_ros_interface/CaptureStereoColorImages.h>
+#include <mecheye_ros_interface/CaptureTexturedPointCloud.h>
 #include <mecheye_ros_interface/CaptureDepthMap.h>
 #include <mecheye_ros_interface/CapturePointCloud.h>
 #include <mecheye_ros_interface/DeleteUserSet.h>
 #include <mecheye_ros_interface/DeviceInfo.h>
-#include <mecheye_ros_interface/Get2DExpectedGrayValue.h>
-#include <mecheye_ros_interface/Get2DExposureMode.h>
-#include <mecheye_ros_interface/Get2DExposureSequence.h>
-#include <mecheye_ros_interface/Get2DExposureTime.h>
-#include <mecheye_ros_interface/Get2DROI.h>
-#include <mecheye_ros_interface/Get2DSharpenFactor.h>
-#include <mecheye_ros_interface/Get2DToneMappingEnable.h>
-#include <mecheye_ros_interface/Get3DExposure.h>
-#include <mecheye_ros_interface/Get3DGain.h>
-#include <mecheye_ros_interface/Get3DROI.h>
+#include <mecheye_ros_interface/AddUserSet.h>
 #include <mecheye_ros_interface/GetAllUserSets.h>
-#include <mecheye_ros_interface/GetCloudOutlierFilterMode.h>
-#include <mecheye_ros_interface/GetCloudSmoothMode.h>
 #include <mecheye_ros_interface/GetCurrentUserSet.h>
-#include <mecheye_ros_interface/GetDepthRange.h>
-#include <mecheye_ros_interface/GetFringeContrastThreshold.h>
-#include <mecheye_ros_interface/GetFringeMinThreshold.h>
-#include <mecheye_ros_interface/GetLaserSettings.h>
-#include <mecheye_ros_interface/GetUhpCaptureMode.h>
-#include <mecheye_ros_interface/GetUhpFringeCodingMode.h>
-#include <mecheye_ros_interface/GetUhpSettings.h>
-#include <mecheye_ros_interface/GetProjectorFringeCodingMode.h>
-#include <mecheye_ros_interface/GetProjectorPowerLevel.h>
-#include <mecheye_ros_interface/GetProjectorAntiFlickerMode.h>
-
 #include <mecheye_ros_interface/SaveAllSettingsToUserSets.h>
-#include <mecheye_ros_interface/Set2DExpectedGrayValue.h>
-#include <mecheye_ros_interface/Set2DExposureMode.h>
-#include <mecheye_ros_interface/Set2DExposureSequence.h>
-#include <mecheye_ros_interface/Set2DExposureTime.h>
-#include <mecheye_ros_interface/Set2DROI.h>
-#include <mecheye_ros_interface/Set2DSharpenFactor.h>
-#include <mecheye_ros_interface/Set2DToneMappingEnable.h>
-#include <mecheye_ros_interface/Set3DExposure.h>
-#include <mecheye_ros_interface/Set3DGain.h>
-#include <mecheye_ros_interface/Set3DROI.h>
-#include <mecheye_ros_interface/SetCloudOutlierFilterMode.h>
-#include <mecheye_ros_interface/SetCloudSmoothMode.h>
 #include <mecheye_ros_interface/SetCurrentUserSet.h>
-#include <mecheye_ros_interface/SetDepthRange.h>
-#include <mecheye_ros_interface/SetFringeContrastThreshold.h>
-#include <mecheye_ros_interface/SetFringeMinThreshold.h>
-#include <mecheye_ros_interface/SetLaserSettings.h>
-#include <mecheye_ros_interface/SetUhpCaptureMode.h>
-#include <mecheye_ros_interface/SetUhpFringeCodingMode.h>
-#include <mecheye_ros_interface/SetUhpSettings.h>
+#include <mecheye_ros_interface/SetIntParameter.h>
+#include <mecheye_ros_interface/GetIntParameter.h>
+#include <mecheye_ros_interface/SetBoolParameter.h>
+#include <mecheye_ros_interface/GetBoolParameter.h>
+#include <mecheye_ros_interface/SetFloatParameter.h>
+#include <mecheye_ros_interface/GetFloatParameter.h>
+#include <mecheye_ros_interface/SetEnumParameter.h>
+#include <mecheye_ros_interface/GetEnumParameter.h>
+#include <mecheye_ros_interface/SetRangeParameter.h>
+#include <mecheye_ros_interface/GetRangeParameter.h>
+#include <mecheye_ros_interface/SetROIParameter.h>
+#include <mecheye_ros_interface/GetROIParameter.h>
+#include <mecheye_ros_interface/SetFloatArrayParameter.h>
+#include <mecheye_ros_interface/GetFloatArrayParameter.h>
 
-#include <mecheye_ros_interface/SetProjectorFringeCodingMode.h>
-#include <mecheye_ros_interface/SetProjectorPowerLevel.h>
-#include <mecheye_ros_interface/SetProjectorAntiFlickerMode.h>
-
-namespace mecheye_ros_interface
+class MechMindCamera
 {
+public:
+    MechMindCamera();
 
-    class MechMindCamera
-    {
-    public:
-        MechMindCamera();
+private:
+    ros::NodeHandle nh;
+    mmind::eye::Camera camera;
+    mmind::eye::CameraIntrinsics intrinsics;
 
-    private:
-        mmind::api::MechEyeDevice device;
-        mmind::api::DeviceIntri intri;
+    std::string camera_ip;
+    bool save_file = false;
+    bool use_external_intri = false;
+    double fx = 0;
+    double fy = 0;
+    double u = 0;
+    double v = 0;
 
-        ros::NodeHandle nh;
+    ros::Publisher pub_color;
+    ros::Publisher pub_color_left;
+    ros::Publisher pub_color_right;
+    ros::Publisher pub_depth;
+    ros::Publisher pub_pcl;
+    ros::Publisher pub_pcl_color;
+    ros::Publisher pub_camera_info;
 
-        std::string camera_ip;
-        bool save_file = false;
-        bool use_external_intri = false;
-        double fx = 0;
-        double fy = 0;
-        double u = 0;
-        double v = 0;
-        double x = 0;
-        double y = 0;
-        double z = 0;
-        double qx = 0;
-        double qy = 0;
-        double qz = 0;
-        double qw = 1;
+    void publishColorMap(mmind::eye::Color2DImage& color2DImage);
+    void publishStereoColorMap(mmind::eye::Color2DImage& leftColor2DImage,
+                               mmind::eye::Color2DImage& rightColor2DImage);
+    void publishDepthMap(mmind::eye::DepthMap& depthMap);
+    void publishPointCloud(mmind::eye::PointCloud& pointCloud);
+    void publishColorPointCloud(mmind::eye::TexturedPointCloud& texturedPointCloud);
+    void publishColorCameraInfo(const std_msgs::Header& header, int width, int height);
+    void publishDepthCameraInfo(const std_msgs::Header& header, int width, int height);
 
-        ros::Publisher pub_color;
-        ros::Publisher pub_depth;
-        ros::Publisher pub_pcl;
-        ros::Publisher pub_pcl_color;
-        ros::Publisher pub_camera_info;
+    ros::ServiceServer add_user_set_service;
+    ros::ServiceServer capture_color_image_service;
+    ros::ServiceServer capture_stereo_color_images_service;
+    ros::ServiceServer capture_textured_point_cloud_service;
+    ros::ServiceServer capture_depth_map_service;
+    ros::ServiceServer capture_point_cloud_service;
 
-        void publishColorMap(mmind::api::ColorMap &colorMap);
-        void publishDepthMap(mmind::api::DepthMap &depthMap);
-        void publishPointCloud(mmind::api::PointXYZMap &pointXYZMap);
-        void publishColorPointCloud(mmind::api::PointXYZBGRMap &pointXYZBGRMap);
-        void publishCameraInfo(const std_msgs::Header &header, int width, int height);
+    ros::ServiceServer delete_user_set_service;
+    ros::ServiceServer device_info_service;
+    ros::ServiceServer get_all_user_sets_service;
+    ros::ServiceServer get_current_user_set_service;
+    ros::ServiceServer save_all_settings_to_user_sets_service;
+    ros::ServiceServer set_current_user_set_service;
 
-        ros::ServiceServer add_user_set_service;
-        ros::ServiceServer capture_color_map_service;
-        ros::ServiceServer capture_color_point_cloud_service;
-        ros::ServiceServer capture_depth_map_service;
-        ros::ServiceServer capture_point_cloud_service;
-        ros::ServiceServer delete_user_set_service;
-        ros::ServiceServer device_info_service;
-        ros::ServiceServer get_2d_expected_gray_value_service;
-        ros::ServiceServer get_2d_exposure_mode_service;
-        ros::ServiceServer get_2d_exposure_sequence_service;
-        ros::ServiceServer get_2d_exposure_time_service;
-        ros::ServiceServer get_2d_roi_service;
-        ros::ServiceServer get_2d_sharpen_factor_service;
-        ros::ServiceServer get_2d_tone_mapping_service;
-        ros::ServiceServer get_3d_exposure_service;
-        ros::ServiceServer get_3d_gain_service;
-        ros::ServiceServer get_3d_roi_service;
-        ros::ServiceServer get_all_user_sets_service;
-        ros::ServiceServer get_cloud_outlier_filter_mode_service;
-        ros::ServiceServer get_cloud_smooth_mode_service;
-        ros::ServiceServer get_current_user_set_service;
-        ros::ServiceServer get_depth_range_service;
-        ros::ServiceServer get_fringe_contrast_threshold_service;
-        ros::ServiceServer get_fringe_min_threshold_service;
-        ros::ServiceServer get_laser_settings_service;
-        ros::ServiceServer get_uhp_capture_mode_service;
-        ros::ServiceServer get_uhp_fringe_coding_mode_service;
-        ros::ServiceServer get_uhp_settings_service;
+    ros::ServiceServer get_float_sequence_parameter_service;
+    ros::ServiceServer set_float_sequence_parameter_service;
+    ros::ServiceServer get_roi_parameter_service;
+    ros::ServiceServer set_roi_parameter_service;
+    ros::ServiceServer get_range_parameter_service;
+    ros::ServiceServer set_range_parameter_service;
+    ros::ServiceServer get_int_parameter_service;
+    ros::ServiceServer set_int_parameter_service;
+    ros::ServiceServer get_bool_parameter_service;
+    ros::ServiceServer set_bool_parameter_service;
+    ros::ServiceServer get_enum_parameter_service;
+    ros::ServiceServer set_enum_parameter_service;
+    ros::ServiceServer get_float_parameter_service;
+    ros::ServiceServer set_float_parameter_service;
 
-        ros::ServiceServer get_projector_fringecodingmode_service;
-        ros::ServiceServer get_projector_powerlevel_service;
-        ros::ServiceServer get_projector_antiflickermode_service;
+    bool capture_color_image_callback(mecheye_ros_interface::CaptureColorImage::Request& req,
+                                      mecheye_ros_interface::CaptureColorImage::Response& res);
 
-	ros::ServiceServer save_all_settings_to_user_sets_service;
-        ros::ServiceServer set_2d_expected_gray_value_service;
-        ros::ServiceServer set_2d_exposure_mode_service;
-        ros::ServiceServer set_2d_exposure_sequence_service;
-        ros::ServiceServer set_2d_exposure_time_service;
-        ros::ServiceServer set_2d_roi_service;
-        ros::ServiceServer set_2d_sharpen_factor_service;
-        ros::ServiceServer set_2d_tone_mapping_service;
-        ros::ServiceServer set_3d_exposure_service;
-        ros::ServiceServer set_3d_gain_service;
-        ros::ServiceServer set_3d_roi_service;
-        ros::ServiceServer set_cloud_outlier_filter_mode_service;
-        ros::ServiceServer set_cloud_smooth_mode_service;
-        ros::ServiceServer set_current_user_set_service;
-        ros::ServiceServer set_depth_range_service;
-        ros::ServiceServer set_fringe_contrast_threshold_service;
-        ros::ServiceServer set_fringe_min_threshold_service;
-        ros::ServiceServer set_laser_settings_service;  
-        ros::ServiceServer set_uhp_capture_mode_service;
-        ros::ServiceServer set_uhp_fringe_coding_mode_service;
-        ros::ServiceServer set_uhp_settings_service;
+    bool capture_textured_point_cloud_callback(
+        mecheye_ros_interface::CaptureTexturedPointCloud::Request& req,
+        mecheye_ros_interface::CaptureTexturedPointCloud::Response& res);
+    bool capture_depth_map_callback(mecheye_ros_interface::CaptureDepthMap::Request& req,
+                                    mecheye_ros_interface::CaptureDepthMap::Response& res);
+    bool capture_point_cloud_callback(mecheye_ros_interface::CapturePointCloud::Request& req,
+                                      mecheye_ros_interface::CapturePointCloud::Response& res);
+    bool capture_stereo_color_images_callback(
+        mecheye_ros_interface::CaptureStereoColorImages::Request& req,
+        mecheye_ros_interface::CaptureStereoColorImages::Response& res);
+    bool add_user_set_callback(mecheye_ros_interface::AddUserSet::Request& req,
+                               mecheye_ros_interface::AddUserSet::Response& res);
+    bool delete_user_set_callback(mecheye_ros_interface::DeleteUserSet::Request& req,
+                                  mecheye_ros_interface::DeleteUserSet::Response& res);
+    bool device_info_callback(mecheye_ros_interface::DeviceInfo::Request& req,
+                              mecheye_ros_interface::DeviceInfo::Response& res);
+    bool get_all_user_sets_callback(mecheye_ros_interface::GetAllUserSets::Request& req,
+                                    mecheye_ros_interface::GetAllUserSets::Response& res);
+    bool get_current_user_set_callback(mecheye_ros_interface::GetCurrentUserSet::Request& req,
+                                       mecheye_ros_interface::GetCurrentUserSet::Response& res);
+    bool save_all_settings_to_user_sets_callback(
+        mecheye_ros_interface::SaveAllSettingsToUserSets::Request& req,
+        mecheye_ros_interface::SaveAllSettingsToUserSets::Response& res);
 
-        ros::ServiceServer set_projector_fringecodingmode_service;
-        ros::ServiceServer set_projector_powerlevel_service;
-        ros::ServiceServer set_projector_antiflickermode_service;
+    bool set_current_user_set_callback(mecheye_ros_interface::SetCurrentUserSet::Request& req,
+                                       mecheye_ros_interface::SetCurrentUserSet::Response& res);
 
-        bool add_user_set_callback(AddUserSet::Request &req, AddUserSet::Response &res);
-        bool capture_color_map_callback(CaptureColorMap::Request &req, CaptureColorMap::Response &res);
-        bool capture_color_point_cloud_callback(CaptureColorPointCloud::Request &req, CaptureColorPointCloud::Response &res);
-        bool capture_depth_map_callback(CaptureDepthMap::Request &req, CaptureDepthMap::Response &res);
-        bool capture_point_cloud_callback(CapturePointCloud::Request &req, CapturePointCloud::Response &res);
-        bool delete_user_set_callback(DeleteUserSet::Request &req, DeleteUserSet::Response &res);
-        bool device_info_callback(DeviceInfo::Request &req, DeviceInfo::Response &res);
-        bool get_2d_expected_gray_value_callback(Get2DExpectedGrayValue::Request &req,
-                                                 Get2DExpectedGrayValue::Response &res);
-        bool get_2d_exposure_mode_callback(Get2DExposureMode::Request &req, Get2DExposureMode::Response &res);
-        bool get_2d_exposure_sequence_callback(Get2DExposureSequence::Request &req, Get2DExposureSequence::Response &res);
-        bool get_2d_exposure_time_callback(Get2DExposureTime::Request &req, Get2DExposureTime::Response &res);
-        bool get_2d_roi_callback(Get2DROI::Request &req, Get2DROI::Response &res);
-        bool get_2d_sharpen_factor_callback(Get2DSharpenFactor::Request &req, Get2DSharpenFactor::Response &res);
-        bool get_2d_tone_mapping_callback(Get2DToneMappingEnable::Request &req, Get2DToneMappingEnable::Response &res);
-        bool get_3d_exposure_callback(Get3DExposure::Request &req, Get3DExposure::Response &res);
-        bool get_3d_gain_callback(Get3DGain::Request &req, Get3DGain::Response &res);
-        bool get_3d_roi_callback(Get3DROI::Request &req, Get3DROI::Response &res);
-        bool get_all_user_sets_callback(GetAllUserSets::Request &req, GetAllUserSets::Response &res);
-        bool get_cloud_outlier_filter_mode_callback(GetCloudOutlierFilterMode::Request &req,
-                                                    GetCloudOutlierFilterMode ::Response &res);
-        bool get_cloud_smooth_mode_callback(GetCloudSmoothMode::Request &req, GetCloudSmoothMode::Response &res);
-        bool get_current_user_set_callback(GetCurrentUserSet::Request &req, GetCurrentUserSet::Response &res);
-        bool get_depth_range_callback(GetDepthRange::Request &req, GetDepthRange::Response &res);
-        bool get_fringe_contrast_threshold_callback(GetFringeContrastThreshold::Request &req,
-                                                    GetFringeContrastThreshold::Response &res);
-        bool get_fringe_min_threshold_callback(GetFringeMinThreshold::Request &req, GetFringeMinThreshold::Response &res);
-        bool get_laser_settings_callback(GetLaserSettings::Request &req, GetLaserSettings::Response &res);
-        bool get_uhp_settings_callback(GetUhpSettings::Request &req, GetUhpSettings::Response &res);
-        bool get_uhp_capture_mode_callback(GetUhpCaptureMode::Request &req, GetUhpCaptureMode::Response &res);
-        bool get_uhp_fringe_coding_mode_callback(GetUhpFringeCodingMode::Request &req, GetUhpFringeCodingMode::Response &res);
-        
-        bool get_projector_fringecodingmode_callback(GetProjectorFringeCodingMode::Request &req, GetProjectorFringeCodingMode::Response &res);
-        bool get_projector_powerlevel_callback(GetProjectorPowerLevel::Request &req, GetProjectorPowerLevel::Response &res);
-        bool get_projector_antiflickermode_callback(GetProjectorAntiFlickerMode::Request &req, GetProjectorAntiFlickerMode::Response &res);
+    bool get_float_array_parameter_callback(
+        mecheye_ros_interface::GetFloatArrayParameter::Request& req,
+        mecheye_ros_interface::GetFloatArrayParameter::Response& res);
 
-	bool save_all_settings_to_user_sets_callback(SaveAllSettingsToUserSets::Request &req,
-                                                     SaveAllSettingsToUserSets::Response &res);
-        bool set_2d_expected_gray_value_callback(Set2DExpectedGrayValue::Request &req,
-                                                 Set2DExpectedGrayValue::Response &res);
-        bool set_2d_exposure_mode_callback(Set2DExposureMode::Request &req, Set2DExposureMode::Response &res);
-        bool set_2d_exposure_sequence_callback(Set2DExposureSequence::Request &req, Set2DExposureSequence::Response &res);
-        bool set_2d_exposure_time_callback(Set2DExposureTime::Request &req, Set2DExposureTime::Response &res);
-        bool set_2d_roi_callback(Set2DROI::Request &req, Set2DROI::Response &res);
-        bool set_2d_sharpen_factor_callback(Set2DSharpenFactor::Request &req, Set2DSharpenFactor::Response &res);
-        bool set_2d_tone_mapping_callback(Set2DToneMappingEnable::Request &req, Set2DToneMappingEnable::Response &res);
-        bool set_3d_exposure_callback(Set3DExposure::Request &req, Set3DExposure::Response &res);
-        bool set_3d_gain_callback(Set3DGain::Request &req, Set3DGain::Response &res);
-        bool set_3d_roi_callback(Set3DROI::Request &req, Set3DROI::Response &res);
-        bool set_cloud_outlier_filter_mode_callback(SetCloudOutlierFilterMode::Request &req,
-                                                    SetCloudOutlierFilterMode ::Response &res);
-        bool set_cloud_smooth_mode_callback(SetCloudSmoothMode::Request &req, SetCloudSmoothMode::Response &res);
-        bool set_current_user_set_callback(SetCurrentUserSet::Request &req, SetCurrentUserSet::Response &res);
-        bool set_depth_range_callback(SetDepthRange::Request &req, SetDepthRange::Response &res);
-        bool set_fringe_contrast_threshold_callback(SetFringeContrastThreshold::Request &req,
-                                                    SetFringeContrastThreshold::Response &res);
-        bool set_fringe_min_threshold_callback(SetFringeMinThreshold::Request &req, SetFringeMinThreshold::Response &res);
-        bool set_laser_settings_callback(SetLaserSettings::Request &req, SetLaserSettings::Response &res);
-        bool set_uhp_settings_callback(SetUhpSettings::Request &req, SetUhpSettings::Response &res);
-        bool set_uhp_capture_mode_callback(SetUhpCaptureMode::Request &req, SetUhpCaptureMode::Response &res);
-        bool set_uhp_fringe_coding_mode_callback(SetUhpFringeCodingMode::Request &req, SetUhpFringeCodingMode::Response &res);
+    bool set_float_array_parameter_callback(
+        mecheye_ros_interface::SetFloatArrayParameter::Request& req,
+        mecheye_ros_interface::SetFloatArrayParameter::Response& res);
 
-	bool set_projector_fringecodingmode_callback(SetProjectorFringeCodingMode::Request &req, SetProjectorFringeCodingMode::Response &res);
-        bool set_projector_powerlevel_callback(SetProjectorPowerLevel::Request &req, SetProjectorPowerLevel::Response &res);
-        bool set_projector_antiflickermode_callback(SetProjectorAntiFlickerMode::Request &req, SetProjectorAntiFlickerMode::Response &res);
-    };
-} // namespace mecheye_ros_interface
+    bool get_roi_parameter_callback(mecheye_ros_interface::GetROIParameter::Request& req,
+                                    mecheye_ros_interface::GetROIParameter::Response& res);
+
+    bool set_roi_parameter_callback(mecheye_ros_interface::SetROIParameter::Request& req,
+                                    mecheye_ros_interface::SetROIParameter::Response& res);
+
+    bool get_range_parameter_callback(mecheye_ros_interface::GetRangeParameter::Request& req,
+                                      mecheye_ros_interface::GetRangeParameter::Response& res);
+
+    bool set_range_parameter_callback(mecheye_ros_interface::SetRangeParameter::Request& req,
+                                      mecheye_ros_interface::SetRangeParameter::Response& res);
+
+    bool get_int_parameter_callback(mecheye_ros_interface::GetIntParameter::Request& req,
+                                    mecheye_ros_interface::GetIntParameter::Response& res);
+
+    bool set_int_parameter_callback(mecheye_ros_interface::SetIntParameter::Request& req,
+                                    mecheye_ros_interface::SetIntParameter::Response& res);
+
+    bool get_bool_parameter_callback(mecheye_ros_interface::GetBoolParameter::Request& req,
+                                     mecheye_ros_interface::GetBoolParameter::Response& res);
+
+    bool set_bool_parameter_callback(mecheye_ros_interface::SetBoolParameter::Request& req,
+                                     mecheye_ros_interface::SetBoolParameter::Response& res);
+
+    bool get_enum_parameter_callback(mecheye_ros_interface::GetEnumParameter::Request& req,
+                                     mecheye_ros_interface::GetEnumParameter::Response& res);
+
+    bool set_enum_parameter_callback(mecheye_ros_interface::SetEnumParameter::Request& req,
+                                     mecheye_ros_interface::SetEnumParameter::Response& res);
+
+    bool get_float_parameter_callback(mecheye_ros_interface::GetFloatParameter::Request& req,
+                                      mecheye_ros_interface::GetFloatParameter::Response& res);
+
+    bool set_float_parameter_callback(mecheye_ros_interface::SetFloatParameter::Request& req,
+                                      mecheye_ros_interface::SetFloatParameter::Response& res);
+};

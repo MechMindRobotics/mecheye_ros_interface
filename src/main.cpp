@@ -1,12 +1,26 @@
+#include <csignal>
 #include <MechMindCamera.h>
+#include <area_scan_3d_camera/api_util.h>
 
-int main(int argc, char **argv)
+void signalHandler(int signum)
 {
-    ros::init(argc, argv, "mechmind_camera");
-    ros::AsyncSpinner spinner(2);
-    spinner.start();
-    mecheye_ros_interface::MechMindCamera mm_camera;
+    ROS_INFO("Interrupt signal (%d) received. Shutting down.", signum);
+    ros::shutdown();
+}
 
-    ros::waitForShutdown();
+int main(int argc, char** argv)
+{
+    ros::init(argc, argv, "mechmind_camera_publisher_service");
+
+    signal(SIGINT, signalHandler);
+    signal(SIGTERM, signalHandler);
+
+    try {
+        MechMindCamera mm_camera;
+        ros::spin();
+    } catch (mmind::eye::ErrorStatus error) {
+        showError(error);
+        return error.errorCode;
+    }
     return 0;
 }

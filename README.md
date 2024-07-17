@@ -1,400 +1,492 @@
-# Mech-Eye ROS Interface
+# ROS 1 Interface for Mech-Eye Industrial 3D Camera
 
-This repository contains the official ROS interface for Mech-Eye camera.
+This documentation provides instructions on using the ROS 1 interface for Mech-Eye Industrial 3D Camera.
 
-## Installation
+If you have any questions or have anything to share, feel free to post on the [Mech-Mind Online Community](https://community.mech-mind.com/). The community also contains a [specific category for development with Mech-Eye SDK](https://community.mech-mind.com/c/mech-eye-sdk-development/19).
 
-### Dependencies
+## Prerequisites
 
-|   Package    |    Version    |
-| :----------: | :-----------: |
-|    OpenCV    |     >= 3      |
-|     PCL      |     >= 1.8    |
-|    Eigen     |     3.3.0     |
-|     VTK      |     6.3.0     |
-| Mech-Eye SDK |     1.6.0     |
+In order to use the ROS 1 interface, the following prerequisites must be satisfied:
 
-### ROS
+* Ubuntu version: 20.04 has been tested to work with this interface.
+* ROS version: [ROS Noetic](http://roswiki.autolabor.com.cn/noetic%282f%29Installation%282f%29Ubuntu.html) has been tested to work with this interface.
 
-This API supports Ubuntu 18.04 with [ROS Melodic](http://wiki.ros.org/melodic/Installation/Ubuntu), and Ubuntu 20.04 with [ROS Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu).
+  >Note: If you have multiple versions of ROS installed, make sure to set the `ROS_DISTRO` environment variable to the version you are about to use.
+  >
+  >* Execute the following command to check ROS's environment variables:
+  >
+  >  ```bash
+  >  printenv | grep ROS
+  >  ```
+  >
+  >* Execute the following command to change the value of the `ROS_DISTRO` environment variable. Replace `distro` with the short name of the ROS version that you use.
+  >
+  >  ```bash
+  >  export ROS_DISTRO=distro
+  >  ```
+
+* Dependencies:
+
+  |   Package    |    Version    |
+  | :----------: | :-----------: |
+  |    OpenCV    |     >= 3      |
+  |     PCL      |     >= 1.8    |
+  | Mech-Eye SDK |     Latest    |
+
+* [Mech-Eye SDK (latest version)](https://downloads.mech-mind.com/?tab=tab-sdk)
+
+### Install Dependencies
+
+If you have installed "ros-noetic-desktop" successfully, execute the following commands to install the dependencies.
+
+```bash
+sudo apt install libopencv-dev
+sudo apt install ros-noetic-cv-bridge
+sudo apt install libpcl-dev
+sudo apt install ros-noetic-pcl-conversions
+sudo apt install python3-colcon-common-extensions
+```
 
 ### Install Mech-Eye SDK
 
-Download and install MechEyeApi_1.6.0 compatible with Ubuntu from this [link](https://www.mech-mind.com/download/camera-sdk.html).
+>Note: If you have installed Mech-Eye SDK before, please uninstall it first with the following command:
+>
+>```bash
+>sudo dpkg -P MechEyeApi
+>```
 
-### Install the Interace
-
-- Download this ROS interface
-
-  ```bash
-  mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
-  git clone https://github.com/MechMindRobotics/mecheye_ros_interface
-  cd ~/catkin_ws
-  catkin_make
-  ```
-
-## Brief intro to the interface
-
-- Interface functions can be found in the documentation inside [Mech-Eye SDK](https://www.mech-mind.com/download/camera-sdk.html).
-- Change config in `~/catkin_ws/src/mecheye_ros_interface/launch/start_camera.launch`
-  - save_file: `true` to enable save file to '/tmp/xxx', otherwise keep it as `false`
-  - camera_ip: change to your camera ip address here (also remember to comment and uncomment the lines in `MechMindCamera.cpp` to connect to a specific camera)
-  - tf related arguments: using quaternion for rotation parameters, to be changed to your calibrated parameters.
-  - at the moment, image save path can only be changed in source code `/mecheye_ros_interface/src/MechMindCamera.cpp`.
-  - remember to catkin_make again after changing `*.cpp`.
-- Source the build workspace and use roslaunch
+* If the system architecture is AMD64, execute the following command:
 
   ```bash
-  source ~/catkin_ws/devel/setup.bash
-  roslaunch mecheye_ros_interface start_camera.launch 
+  sudo dpkg -i 'Mech-Eye_API_x.x.x_amd64.deb'
   ```
 
-  Select a camera in LAN. Then, the camera will start working.
-- Open a new terminal, source the workspace and call services
+* If the system architecture is ARM64, execute the following command:
 
   ```bash
-  source ~/catkin_ws/devel/setup.bash
-  rosservice call [/service] [arguments]
+  sudo dpkg -i 'Mech-Eye_API_x.x.x_arm64.deb'
   ```
 
-  ```bash
-  # Example
-  rosservice call /set_cloud_outlier_filter_mode '!!str Off'   # for 'Off', it is necessary to input '!!str' before it.
-  rosservice call /set_laser_settings 'Fast' 0 50 1 20
-  rosservice call /set_3d_exposure [3.2,4.0]   # Do not input ' ' before the second arg, or it will be passed by string.
-  rosservice call /add_user_set '!!str 123'
-  rosservice call /delete_user_set 'test'
-  ```
+## Clone and Compile the Interface
+
+Execute the following commands to clone and compile the interface:
+
+```bash
+mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
+git clone https://github.com/MechMindRobotics/mecheye_ros_interface.git
+cd ~/catkin_ws
+catkin_make
+```
+
+## Use the Interface
+
+1. (Optional) Change the configurations in `~/catkin_ws/src/mecheye_ros_interface/launch/start_camera.launch` according to your needs:
+
+   * `save_file`: Set this argument to `true` to allow file saving to the `/tmp/` directory. If you set this argument to `false`, the obtained data are not saved locally automatically.
+   * `camera_ip`: If you want to connect to a specific camera by its IP address, change the value of this argument to the IP address of your camera. You also need to comment and uncomment the corresponding lines in `~/catkin_ws/src/mecheye_ros_interface/src/MechMindCamera.cpp`.
+
+   > Note: Remember to run `catkin_make` again after making changes to the `MechMindCamera.h` and `*.cpp`.
+
+2. Open a terminal and execute the following command to start up the interface:
+
+   ```bash
+
+   source ~/catkin_ws/devel/setup.bash
+   roslaunch mecheye_ros_interface start_camera.launch
+   ```
+
+3. Enter the index number of the camera to which you want to connect, and press the Enter key.
+4. Open a new terminal, and execute the following command to invoke a service. Replace `service_name` with the actual name of the service, `parameter_name` with the actual name of the parameter, and `parameter_value` with the actual value of the parameter.
+
+   >Note: For example commands of each service, refer to the [Services](#services) section.
+
+   ```bash
+   source ~/catkin_ws/devel/setup.bash
+   rosservice call [/service_name] "{parameter_name: parameter_value}"
+   ```
 
 ## Topics
 
-### /mechmind/camera_info
+The following topics are provided:
 
-Camera calibration and metadata.
+* /mechmind/camera_info: Camera intrinsic parameters.
+* /mechmind/color_image: 2D image encoded as "bgr8".
+* /mechmind/stereo_color_image_left: The left stereo 2D image encoded as "bgr8".
+* /mechmind/stereo_color_image_right: The right stereo 2D image encoded as "bgr8".
+* /mechmind/depth_map: Depth map encoded as a single-channel image, each channel containing a 32-bit float number.
+* /mechmind/point_cloud: Point cloud data.
+* /mechmind/textured_point_cloud: Textured point cloud data.
 
-### /mechmind/color_image
-
-Color image encoded as "bgr8".
-
-### /mechmind/depth_image
-
-Depth image encoded as 32-bit float.
-
-### /mechmind/point_cloud
-
-Point cloud data.
-
-### /mechmind/color_point_cloud
-
-Color point cloud data.
+  > Note: For the DEEP and LSR series, Mech-Eye SDK 2.3.4, the point cloud is not textured correctly when the point cloud unit is set to m. This issue will be fixed in Mech-Eye SDK 2.4.0. As a workaround, you can comment out line 127 in `MechMindCamera.cpp`.
 
 ## Services
 
-### [add_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/AddUserSet.srv)
+<!-- * Interface functions are described in the online documentation [Mech-Eye API Reference](https://docs.mech-mind.net/latest/en-GB/MechEye/MechEyeAPI/ApiReference/ApiReference.html). -->
 
-Invoke this service to add a user set.
+### Data Acquisition
 
-This service has one parameter:
+#### [capture_color_image](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorMap.srv)
 
-`value` (string): User set name to add.
+Invoke this service to obtain a 2D image.
 
-### [capture_color_map](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorMap.srv)
+Example:
 
-Invoke this service to capture color map once.
+```bash
+rosservice call /capture_color_image
+```
 
-### [capture_color_point_cloud](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorPointCloud.srv)
+#### [capture_depth_map](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureDepthMap.srv)
 
-Invoke this service to capture color point cloud once.
+Invoke this service to obtain a depth map.
 
-### [capture_depth_map](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureDepthMap.srv)
+Example:
 
-Invoke this service to capture color depth map once.
+```bash
+rosservice call /capture_depth_map
+```
 
-### [capture_point_cloud](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CapturePointCloud.srv)
+#### [capture_point_cloud](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CapturePointCloud.srv)
 
-Invoke this service to capture point cloud once.
+Invoke this service to obtain an untextured point cloud.
 
-### [delete_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/DeleteUserSet.srv)
+Example:
 
-Invoke this service to delete a specified user set.
+```bash
+rosservice call /capture_point_cloud
+```
 
-This service has one parameter:
+#### [capture_textured_point_cloud](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorPointCloud.srv)
 
-`value` (string): User set name to delete.
+Invoke this service to obtain a textured point cloud.
 
-### [device_info](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/DeviceInfo.srv)
+Example:
 
-Invoke this service to get the current connected device information.
+```bash
+rosservice call /capture_textured_point_cloud
+```
 
-### [get_2d_expected_gray_value](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get2DExpectedGrayValue.srv)
+#### [capture_stereo_color_images](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureStereoColorMap.srv)
 
-Invoke this service to get the expected image gray value.  
-Only take effect when 2D exposure mode is `Auto`.  
-A smaller value can decrease the brightness of the image, while a larger value can generate a brighter image.
+Invoke this service to obtain a stereo 2D image.
 
-### [get_2d_exposure_mode](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get2DExposureMode.srv)
+>Note: This service is only available for the following models: DEEP, LSR S, LSR L, LSR XL, and PRO XS.
 
-Invoke this service to get current 2D exposure mode.  
+Example:
 
-### [get_2d_exposure_sequence](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get2DExposureSequence.srv)
+```bash
+rosservice call /capture_stereo_color_images
+```
 
-Invoke this service to get current 2D HDR exposure sequence.  
-Only take effect when 2D exposure mode is `HDR`.
+### Manage Parameter Groups
 
-### [get_2d_exposure_time](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get2DExposureTime.srv)
+#### [get_all_user_sets](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetAllUserSets.srv)
 
-Invoke this service to get current 2D exposure time.  
-Only take effect when 2D exposure mode is `Timed`.
+Invoke this service to obtain the names of all available parameter groups.
 
-### [get_2d_roi](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get2DROI.srv)
+Example:
 
-Invoke this service to get current ROI when scanning 2D images.  
-Only take effect when 2D exposure mode is `Auto` or `HDR`.
+  ```bash
+  rosservice call /get_all_user_sets
+  ```
 
-### [get_2d_sharpen_factor](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get2DSharpenFactor.srv)
+#### [get_current_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetCurrentUserSet.srv)
 
-Invoke this service to get current image sharpen factor.
+Invoke this service to obtain the name of the currently selected parameter group.
 
-### [get_2d_tone_mapping](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get2DToneMappingEnable.srv)
+Example:
 
-Invoke this service to get whether or not is tone mapping enabled.  
-Tone mapping uses gray level transformation algorithm to make the image look more natural.
+  ```bash
+  rosservice call /get_current_user_set
+  ```
 
-### [get_3d_exposure](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get3DExposure.srv)
+#### [set_current_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetCurrentUserSet.srv)
 
-Invoke this service to get current 3D exposure sequence.
-
-### [get_3d_gain](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get3DGain.srv)
-
-Invoke this service to get current camera's gain value during scanning 3D images.  
-Gain is an electronic amplification of the image signal. Large gain value is needed only when scanning extremely dark objects.
-
-### [get_3d_roi](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Get3DROI.srv)
-
-Invoke this service to get current depth map's ROI.
-
-### [get_all_user_sets](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetAllUserSets.srv)
-
-Invoke this service to get all available user sets.
-
-### [get_cloud_outlier_filter_mode](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetCloudOutlierFilterMode.srv)
-
-Invoke this service to get current cloud outler filter mode.
-
-### [get_cloud_smooth_mode](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetCloudSmoothMode.srv)
-
-Invoke this service to get current cloud smooth filter mode.
-
-### [get_current_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetCurrentUserSet.srv)
-
-Invoke this service to get the current user set name.
-
-### [get_depth_range](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetDepthRange.srv)
-
-Invoke this service to get the current depth image's valid range along Z-axis in the camera coordinate system.
-
-### [get_fringe_contrast_threshold](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetFringeContrastThreshold.srv)
-
-Invoke this service to get the current signal contrast threshold for effective pixels. Pixels with contrast less than this threshold will be ignored.
-
-### [get_fringe_min_threshold](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetFringeMinThreshold.srv)
-
-Invoke this service to get the current signal minimum threshold for effective pixels. Pixels with intensity less than this threshold will be ignored.
-
-### [get_laser_settings](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetLaserSettings.srv)
-
-Invoke this service to get the current laser settings.
-
-### [get_uhp_settings](https://github.com/MechMindRobotics/mecheye_ros2_interface/blob/master/srv/GetUhpSettings.srv)
-
-Invoke this service to get the current uhp settings.
-
-### [get_uhp_capture_mode](https://github.com/MechMindRobotics/mecheye_ros2_interface/blob/master/srv/GetUhpCaptureMode.srv)
-
-Invoke this service to get the current uhp capture mode.
-
-### [get_uhp_fringe_coding_mode](https://github.com/MechMindRobotics/mecheye_ros2_interface/blob/master/srv/GetUhpFringeCodingMode.srv)
-
-Invoke this service to get the current uhp fringe coding mode.
-
-### [set_2d_expected_gray_value](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set2DExpectedGrayValue.srv)
-
-Invoke this service to set the expected image gray value.  
-Only take effect when 2D exposure mode is `Auto`.  
-A smaller value can decrease the brightness of the image, while a larger value can generate a brighter image.
+Invoke this service to select the parameter group to use.
 
 This service has one parameter:
 
-`value` (int32): Expected image gray value to set. Min:0, Max: 255.
+* `value` (string): the name of the parameter group to be selected.
 
-### [set_2d_exposure_mode](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set2DExposureMode.srv)
+Example: Select the "123" parameter group.
 
-Invoke this service to set current 2D exposure mode.  
+  ```bash
+  rosservice call /set_current_user_set "{value: '123'}"
+  ```
 
-This service has one parameter:
+>Note: Parameter group names that consist of numbers only must be surrounded by single quotation marks.
 
-`value` (string): 2D exposure mode to set. Options include 'Timed', 'Auto', 'HDR', and 'Flash'.
+#### [add_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/AddUserSet.srv)
 
-### [set_2d_exposure_sequence](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set2DExposureSequence.srv)
-
-Invoke this service to set current 2D HDR exposure sequence.  
-Only take effect when 2D exposure mode is `HDR`.
-
-This service has one parameter:
-
-`sequence` (float64[]): 2D exposure sequence to set. Min: 0.1, Max: 999. Min Size: 1, Max Size: 5.
-
-### [set_2d_exposure_time](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set2DExposureTime.srv)
-
-Invoke this service to set current 2D exposure time.  
-Only take effect when 2D exposure mode is `Timed`.
+Invoke this service to add a parameter group. The newly added parameter group is automatically selected as the current parameter group.
 
 This service has one parameter:
 
-`value` (float64): 2D exposure time to set. Min: 0.1, Max: 999.
+* `value` (string): the name of the parameter group to be added.
 
-### [set_2d_roi](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set2DROI.srv)
+Example: Add a parameter group named "123".
 
-Invoke this service to set current ROI when scanning 2D images.  
-Only take effect when 2D exposure mode is `Auto` or `HDR`.
+```bash
+rosservice call /add_user_set "{value: '123'}"
+```
 
-This service has four parameters:
+>Note: Parameter group names that consist of numbers only must be surrounded by single quotation marks.
 
-`x` (uint32): The column coordinates of the upper left point of the region of interest.  
-`y` (uint32): The row coordinates of the upper left point of the region of interest.  
-`width` (uint32): The width of the region of interest.  
-`height` (uint32): The height of the region of interest.
+#### [delete_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/DeleteUserSet.srv)
 
-### [set_2d_sharpen_factor](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set2DSharpenFactor.srv)
-
-Invoke this service to set current image sharpen factor.
+Invoke this service to delete the specified parameter group.
 
 This service has one parameter:
 
-`value` (float64): The sharpen factor to set. Min: 0, Max: 5.
+* `value` (string): the name of the parameter group to be deleted.
 
-### [set_2d_tone_mapping](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set2DToneMappingEnable.srv)
+Example: Delete the parameter group named "123".
 
-Invoke this service to set whether or not is tone mapping enabled.  
-Tone mapping uses gray level transformation algorithm to make the image look more natural.
+  ```bash
+  rosservice call /delete_user_set "{value: '123'}"
+  ```
 
-This service has one parameter:
+>Note: Parameter group names that consist of numbers only must be surrounded by single quotation marks.
 
-`value` (bool): Whether or not to enable tone mapping.
+### Obtain Camera Information
 
-### [set_3d_exposure](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set3DExposure.srv)
+#### [device_info](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/DeviceInfo.srv)
 
-Invoke this service to set current 3D exposure sequence.
+Invoke this service to print the following information of the currently connected camera:
 
-This service has one parameter:
+* Model
+* Serial number
+* Hardware version
+* Firmware version
+* IP address
+* Subnet mask
+* IP address assigment method
+* Port
 
-`sequence` (float64[]): Exposure sequence to set. Min: 0.1, Max: 99. Min Size: 1, Max Size: 3.
+Example:
 
-### [set_3d_gain](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set3DGain.srv)
+  ```bash
+  rosservice call /device_info
+  ```
 
-Invoke this service to set current camera's gain value during scanning 3D images.  
-Gain is an electronic amplification of the image signal. Large gain value is needed only when scanning extremely dark objects.
+### Adjust Camera Parameters
 
-This service has one parameter:
+> Note: The functions of obtaining and adjusting camera parameter values have been restructured. Mech-Eye SDK 2.3.4 and above provide services according to the data types of the camera parameters. To obtain or adjust the value of a camera parameter, call the service corresponding to the data type of the camera parameter and enter the name of the camera parameter as the service's parameter. The data types and names of the camera parameters can be found in the header files in the installation path of Mech-Eye SDK: `/opt/mech-mind/mech-eye-sdk/include/area_scan_3d_camera/parameters/`.
 
-`value` (float64): Gain value to set. Min: 0, Max: 16.
+The following data types of camera parameters are distinguished:
 
-### [set_3d_roi](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/Set3DROI.srv)
+* _Int
+* _Float
+* _Bool
+* _Enum
+* _Roi
+* _Range
+* _FloatArray
 
-Invoke this service to set current depth map's ROI.
+#### [get_int_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetIntParameter.srv)
 
-This service has four parameters:
-
-`x` (uint32): The column coordinates of the upper left point of the region of interest.  
-`y` (uint32): The row coordinates of the upper left point of the region of interest.  
-`width` (uint32): The width of the region of interest.  
-`height` (uint32): The height of the region of interest.
-
-### [set_cloud_outlier_filter_mode](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetCloudOutlierFilterMode.srv)
-
-Invoke this service to set current cloud outler filter mode.
-
-This service has one parameter:
-
-`value` (string): Cloud outlier filter mode to set. Options include '!!str Off', 'Normal', and 'Weak'.
-
-### [set_cloud_smooth_mode](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetCloudSmoothMode.srv)
-
-Invoke this service to set current cloud smooth filter mode.
+Invoke this service to obtain the value of the specified _Int-type camera parameter.
 
 This service has one parameter:
 
-`value` (string): Cloud smooth mode to set. Options include '!!str Off', 'Normal', 'Weak', and 'Strong'.
+* `name` (string): the name of the camera parameter.
 
-### [set_current_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetCurrentUserSet.srv)
+Example: Obtain the value of the `Scan2DExpectedGrayValue` parameter.
 
-Invoke this service to set the current user set name.
+  ```bash
+  rosservice call /get_int_parameter "{name: Scan2DExpectedGrayValue}"
+  ```
 
-This service has one parameter:
+### [set_int_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetIntParameter.srv)
 
-`value` (string): User set name to set.
-
-### [set_depth_range](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetDepthRange.srv)
-
-Invoke this service to set the current depth image's valid range along Z-axis in the camera coordinate system.
+Invoke this service to set the value of the specified _Int-type camera parameter.
 
 This service has two parameters:
 
-`lower` (int32): The lower limit of the roi on the z value of the depth map in the camera coordinate system.  
-`upper` (int32): The upper limit of the roi on the z value of the depth map in the camera coordinate system.
+* `name` (string): the name of the camera parameter.
+* `value` (int): the new value of the camera parameter.
 
-### [set_fringe_contrast_threshold](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetFringeContrastThreshold.srv)
+Example: Set the value of the `Scan2DExpectedGrayValue` parameter to 101.
 
-Invoke this service to set the current signal contrast threshold for effective pixels. Pixels with contrast less than this threshold will be ignored.
+  ```bash
+  rosservice call /set_int_parameter "{name: Scan2DExpectedGrayValue, value: 101}"
+  ```
 
-This service has one parameter:
+### [get_float_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetFloatParameter.srv)
 
-`value` (int32): Signal contrast threshold to set. Min: 1, Max: 100.
-
-### [set_fringe_min_threshold](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetFringeMinThreshold.srv)
-
-Invoke this service to set the current signal minimum threshold for effective pixels. Pixels with intensity less than this threshold will be ignored.
+Invoke this service to obtain the value of the specified _Float-type camera parameter.
 
 This service has one parameter:
 
-`value` (int32): Signal minimum threshold to set. Min: 1, Max: 100.
+* `name` (string): the name of the camera parameter.
 
-### [set_laser_settings](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetLaserSettings.srv)
+Example: Obtain the value of the `Scan2DExposureTime` parameter.
 
-Invoke this service to set the current laser settings.
+  ```bash
+  rosservice call /get_float_parameter "{name: Scan2DExposureTime}"
+  ```
+
+### [set_float_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetFloatParameter.srv)
+
+Invoke this service to set the value of the specified _Float-type camera parameter.
+
+This service has two parameters:
+
+* `name` (string): the name of the camera parameter.
+* `value` (float): the new value of the camera parameter.
+
+Example: Set the value of the `Scan2DExposureTime` parameter to 40.1.
+
+  ```bash
+  rosservice call /set_float_parameter "{name: Scan2DExposureTime, value: 40.1}"
+  ```
+
+### [get_bool_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetBoolParameter.srv)
+
+Invoke this service to obtain the value of the specified _Bool-type camera parameter.
+
+This service has one parameter:
+
+* `name` (string): the name of the camera parameter.
+
+Example: Obtain the value of the `Scan2DToneMappingEnable` parameter.
+
+  ```bash
+  rosservice call /get_bool_parameter "{name: Scan2DToneMappingEnable}"
+  ```
+
+### [set_bool_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetBoolParameter.srv)
+
+Invoke this service to set the value of the specified _Bool-type camera parameter.
+
+This service has two parameters:
+
+* `name` (string): the name of the camera parameter.
+* `value` (bool): the new value of the camera parameter.
+
+Example: Set the value of the `Scan2DToneMappingEnable` parameter to `True`.
+
+  ```bash
+  rosservice call /set_bool_parameter "{name: Scan2DToneMappingEnable, value: True}"
+  ```
+
+### [get_enum_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetEnumParameter.srv)
+
+Invoke this service to obtain the value of the specified _Enum-type camera parameter.
+
+This service has one parameter:
+
+* `name` (string): the name of the camera parameter.
+
+Example: Obtain the value of the `Scan2DExposureMode` parameter.
+
+  ```bash
+  rosservice call /get_enum_parameter "{name: Scan2DExposureMode}"
+  ```
+
+### [set_enum_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetEnumParameter.srv)
+
+Invoke this service to set the value of the specified _Enum-type camera parameter.
+
+This service has two parameters:
+
+* `name` (string): the name of the camera parameter.
+* `value` (string): the new value of the camera parameter.
+
+Example: Set the value of the `Scan2DExposureMode` parameter to `Timed`.
+
+  ```bash
+  rosservice call /set_enum_parameter "{name: Scan2DExposureMode, value: Timed}"
+  ```
+
+### [get_roi_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetROIParameter.srv)
+
+Invoke this service to obtain the value of the specified _Roi-type camera parameter.
+
+This service has one parameter:
+
+* `name` (string): the name of the camera parameter.
+
+Example: Obtain the value of the `Scan2DROI` parameter.
+
+  ```bash
+  rosservice call /get_roi_parameter "{name: Scan2DROI}"
+  ```
+
+### [set_roi_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetROIParameter.srv)
+
+Invoke this service to set the value of the specified _Roi-type camera parameter.
 
 This service has five parameters:
 
-`fringeCodingMode` (string): Laser fringe coding mode to set. Options include 'Fast', and 'Accurate'.  
-`frameRangeStart` (int32): The laser scan field of view start position to set. Min: 0, Max: 100.  
-frameRangeEnd - frameRangeStart >= 25  
-`frameRangeEnd` (int32): The laser scan field of view end position to set. Min: 0, Max: 100.  
-frameRangeEnd - frameRangeStart >= 25  
-`framePartitionCount` (int32): Laser's scan partition number to set. Min: 1, Max: 4.  
-`powerLevel` (int32): Laser's power level to set. Min: 20, Max: 100.
+* `name` (string): the name of the camera parameter.
+* `x` (uint32): the new x-coordinate of the upper-left corner of the ROI.
+* `y` (uint32): the new y-coordinate of the upper-left corner of the ROI.
+* `width` (uint32): the new width of the ROI.
+* `height` (uint32): the new height of the ROI.
 
-### [set_uhp_settings](https://github.com/MechMindRobotics/mecheye_ros2_interface/blob/master/srv/SetUhpSettings.srv)
+Example: Set the value of the `Scan2DROI` parameter to [20, 20, 600, 800] (which is an ROI that is 600 px wide, 800 px high and has its upper-left corner at the (20,20) pixel).
 
-Invoke this service to set the current uhp settings.
+  ```bash
+  rosservice call /set_roi_parameter "{name: Scan2DROI, x: 20, y: 20, width: 600, height: 800}"
+  ```
+
+### [get_range_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetRangeParameter.srv)
+
+Invoke this service to obtain the value of the specified _Range-type camera parameter.
+
+This service has one parameter:
+
+* `name` (string): the name of the camera parameter.
+
+Example: Obtain the value of the `DepthRange` parameter.
+
+  ```bash
+  rosservice call /get_range_parameter "{name: DepthRange}"
+  ```
+
+### [set_range_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetRangeParameter.srv)
+
+Invoke this service to set the value of the specified _Range-type camera parameter.
+
+This service has three parameters:
+
+* `name` (string): the name of the camera parameter.
+* `lower` (int32): the new minimum value of the camera parameter's value range.
+* `upper` (int32): the new maximum value of the camera parameter's value range.
+
+Example: Set the value of the `DepthRange` parameter to 200–1000.
+
+  ```bash
+  rosservice call /set_range_parameter "{name: DepthRange, lower: 200, upper: 1000}"
+  ```
+
+### [get_float_array_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/GetFloatArrayParameter.srv)
+
+Invoke this service to obtain the value of the specified _FloatArray-type camera parameter.
+
+This service has one parameter:
+
+* `name` (string): the name of the camera parameter.
+
+Example: Obtain the value of the `Scan2DHDRExposureSequence` parameter.
+
+  ```bash
+  rosservice call /get_float_array_parameter "{name: Scan2DHDRExposureSequence}"
+  ```
+
+### [set_float_array_parameter](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetFloatArrayParameter.srv)
+
+Invoke this service to set the value of the specified _FloatArray-type camera parameter.
 
 This service has two parameters:
 
-`capture_mode` (string): Uhp capture mode to set. Options include 'Camera1', 'Camera2' and 'Merge'.  
-`fringe_coding_mode` (string): Uhp fringe coding mode to set. Options include 'Fast', and 'Accurate'.  
+* `name` (string): the name of the camera parameter.
+* `array` (float64[]): the new value of the camera parameter.
 
-### [set_uhp_capture_mode](https://github.com/MechMindRobotics/mecheye_ros2_interface/blob/master/srv/SetUhpCaptureMode.srv)
+  >Note: The possible number of elements in the sequence and the possible value range of each element can be found in the header files.
 
-Invoke this service to set the current uhp capture mode.
+Example: Set the value of the `Scan2DHDRExposureSequence` parameter to [30.0, 35.5, 40.0].
 
-This service has one parameter:
-
-`capture_mode` (string): Uhp capture mode to set. Options include 'Camera1', 'Camera2' and 'Merge'.  
-
-
-### [set_uhp_fringe_coding_mode](https://github.com/MechMindRobotics/mecheye_ros2_interface/blob/master/srv/SetUhpFringeCodingMode.srv)
-
-Invoke this service to set the current uhp fringe coding mode.
-
-This service has one parameter:
-
-`fringe_coding_mode` (string): Uhp fringe coding mode to set. Options include 'Fast', and 'Accurate'.  
+  ```bash
+  rosservice call /set_float_array_parameter "{name: Scan2DHDRExposureSequence, array: [30.0,35.5,40.0]}"
+  ```

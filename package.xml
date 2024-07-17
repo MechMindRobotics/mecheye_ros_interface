@@ -2,7 +2,7 @@
 <package format="2">
   <name>mecheye_ros_interface</name>
   <version>0.0.2</version>
-  <description>mecheye_ros2_interface package for Mechmind 3D camera, modify from the official API from Mechmind</description>
+  <description>mecheye_ros_interface package for Mechmind 3D camera, modify from the official API from Mechmind</description>
 
   <maintainer email="service@mech-mind.net"></maintainer>
   <license>MIT</license>

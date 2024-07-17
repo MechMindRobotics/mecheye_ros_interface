@@ -1,34 +1,21 @@
-<?xml version="1.0"?>
+<!-- mechmind_camera.launch -->
 <launch>
-    <arg name="save_file" default="true" />
-    <arg name="camera_ip" default="172.24.144.1" />      <!-- change to your camera ip -->
-    <arg name="use_external_intri" default="false" />
-    <arg name="fx" default="1727.4641025602748" />
-    <arg name="fy" default="1727.4586926701952" />
-    <arg name="u" default="655.8180825729554" />
-    <arg name="v" default="516.6306500606158" />
-    <arg name="tf_x" default="0" />
-    <arg name="tf_y" default="0" />
-    <arg name="tf_z" default="0" />
-    <arg name="tf_qx" default="0" />
-    <arg name="tf_qy" default="0" />
-    <arg name="tf_qz" default="0" />
-    <arg name="tf_qw" default="1" />
+  <!-- Start static transform publishers -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf1"
+    args="0 0 1 0 0 0 map /mechmind_camera/point_cloud" output="screen" />
 
-    <node name="mechmind_camera_start" pkg="mecheye_ros_interface" type="start" output="screen">
-        <param name="save_file" value="$(arg save_file)" />
-        <param name="camera_ip" value="$(arg camera_ip)" />
-        <param name="use_external_intri" value="$(arg use_external_intri)" />
-        <param name="fx" value="$(arg fx)" />
-        <param name="fy" value="$(arg fy)" />
-        <param name="u" value="$(arg u)" />
-        <param name="v" value="$(arg v)" />
-        <param name="tf_x" value="$(arg tf_x)" />
-        <param name="tf_y" value="$(arg tf_y)" />
-        <param name="tf_z" value="$(arg tf_z)" />
-        <param name="tf_qx" value="$(arg tf_qx)" />
-        <param name="tf_qy" value="$(arg tf_qy)" />
-        <param name="tf_qz" value="$(arg tf_qz)" />
-        <param name="tf_qw" value="$(arg tf_qw)" />
-    </node>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf2"
+    args="0 0 1 0 0 0 map /mechmind_camera/textured_point_cloud" output="screen" />
+
+  <!-- Start mechmind_camera_publisher_service -->
+  <node pkg="mecheye_ros_interface" type="start" name="mechmind_camera_publisher_service"
+    output="screen">
+    <param name="save_file" value="true" />      <!-- set true to enable save file -->
+    <param name="camera_ip" value="172.20.112.1" /> <!-- change to your camera ip -->
+    <param name="user_external_intri" value="false" />
+    <param name="fx" value="1727.4641025602748" />
+    <param name="fy" value="1727.4586926701952" />
+    <param name="u" value="655.8180825729554" />
+    <param name="v" value="516.6306500606158" />
+  </node>
 </launch>

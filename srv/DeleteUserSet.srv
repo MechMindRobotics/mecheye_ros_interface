@@ -1,4 +1,4 @@
 string value
 ---
-int32 errorCode
-string errorDescription
+int32 error_code
+string error_description

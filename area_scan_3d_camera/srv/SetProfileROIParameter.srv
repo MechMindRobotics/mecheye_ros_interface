@@ -1,0 +1,7 @@
+string name
+float64 x_axis_center
+float64 width
+float64 height
+---
+int32 error_code
+string error_description

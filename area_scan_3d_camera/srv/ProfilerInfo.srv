@@ -1,0 +1,10 @@
+---
+string model
+string controller_sn
+string sensor_sn
+string hardware_version
+string firmware_version
+string ip_address
+string subnet_mask
+string ip_assignment_method
+uint16 port

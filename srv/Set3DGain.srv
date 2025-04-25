@@ -1,4 +1,0 @@
-float64 value
----
-int32 errorCode
-string errorDescription

@@ -1,5 +1,0 @@
-string name
-float64[] sequence
----
-int32 error_code
-string error_description

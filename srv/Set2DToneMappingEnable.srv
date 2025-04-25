@@ -1,4 +1,0 @@
-bool value
----
-int32 errorCode
-string errorDescription

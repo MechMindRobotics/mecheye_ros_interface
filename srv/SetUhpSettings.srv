@@ -1,5 +1,0 @@
-string capture_mode            # Camera1 Camera2 Merge
-string fringe_coding_mode      # Fast Accurate
----
-int32 error_code
-string error_description

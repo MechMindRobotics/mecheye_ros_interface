@@ -1,5 +1,0 @@
-int32 lower
-int32 upper
----
-int32 errorCode
-string errorDescription

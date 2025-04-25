@@ -1,0 +1,16 @@
+<!-- mechmind_profiler.launch -->
+<launch>
+  <!-- Start static transform publishers -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf1"
+    args="0 0 1 0 0 0 map /mechmind_profiler/point_cloud" output="screen" />
+
+  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf2"
+    args="0 0 1 0 0 0 map /mechmind_profiler/textured_point_cloud" output="screen" />
+
+  <!-- Start mechmind_profiler_publisher_service -->
+  <node pkg="mecheye_profiler_ros_interface" type="start" name="mechmind_profiler_publisher_service"
+    output="screen">
+    <param name="save_file" value="true" />      <!-- set true to enable save file -->
+    <param name="profiler_ip" value="172.20.112.1" /> <!-- change to your profiler ip -->
+  </node>
+</launch>

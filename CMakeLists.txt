@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 project (mecheye_ros_interface)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARDREQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/jsoncpp")
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 find_package(PCL REQUIRED)
@@ -14,8 +12,6 @@ find_package(PkgConfig REQUIRED)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS cv_bridge image_transport roscpp rospy std_msgs genmsg sensor_msgs tf message_generation)
-
-pkg_check_modules(JSONCPP REQUIRED jsoncpp)
 
 add_service_files(
   DIRECTORY
@@ -78,10 +74,8 @@ add_dependencies(start mecheye_ros_interface_generate_messages_cpp ${catkin_EXPO
 target_link_libraries(start
     ${PCL_LIBRARIES}
     ${OpenCV_LIBRARIES}
-    ${ZMQ_LIBRARIES}
     ${EIGEN_LIBRARIES}
     ${BOOST_LIBRARIES}
     ${catkin_LIBRARIES}
-    ${JSONCPP_LIBRARIES}
     MechEyeApi
     )

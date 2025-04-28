@@ -8,44 +8,16 @@ If you have any questions or have anything to share, feel free to post on the [M
 
 In order to use the ROS 1 interface, the following prerequisites must be satisfied:
 
-* Ubuntu version: 20.04 has been tested to work with this interface.
-* ROS version: [ROS Noetic](http://roswiki.autolabor.com.cn/noetic%282f%29Installation%282f%29Ubuntu.html) has been tested to work with this interface.
+* Ubuntu version: 20.04 is recommended, which is the main target platform of ROS Noetic Ninjemys.
+* ROS 1 version: The stable version [Noetic Ninjemys](http://roswiki.autolabor.com.cn/noetic%282f%29Installation%282f%29Ubuntu.html) is recommended.
 
-  >Note: If you have multiple versions of ROS installed, make sure to set the `ROS_DISTRO` environment variable to the version you are about to use.
-  >
-  >* Execute the following command to check ROS's environment variables:
-  >
-  >  ```bash
-  >  printenv | grep ROS
-  >  ```
-  >
-  >* Execute the following command to change the value of the `ROS_DISTRO` environment variable. Replace `distro` with the short name of the ROS version that you use.
-  >
-  >  ```bash
-  >  export ROS_DISTRO=distro
-  >  ```
+  >Note: The ROS 1 interface of Mech-Eye SDK has been tested with the above versions of ROS and Ubuntu. The command examples in this document are based on the above versions.
 
+* [Download the latest version of Mech-Eye SDK](https://downloads.mech-mind.com/?tab=tab-sdk).
 * Dependencies:
 
-  |   Package    |    Version    |
-  | :----------: | :-----------: |
-  |    OpenCV    |     >= 3      |
-  |     PCL      |     >= 1.8    |
-  | Mech-Eye SDK |     Latest    |
-
-* [Mech-Eye SDK (latest version)](https://downloads.mech-mind.com/?tab=tab-sdk)
-
-### Install Dependencies
-
-If you have installed "ros-noetic-desktop" successfully, execute the following commands to install the dependencies.
-
-```bash
-sudo apt install libopencv-dev
-sudo apt install ros-noetic-cv-bridge
-sudo apt install libpcl-dev
-sudo apt install ros-noetic-pcl-conversions
-sudo apt install python3-colcon-common-extensions
-```
+  * OpenCV: 3.0 or above
+  * PCL: 1.8 or above
 
 ### Install Mech-Eye SDK
 
@@ -67,36 +39,58 @@ sudo apt install python3-colcon-common-extensions
   sudo dpkg -i 'Mech-Eye_API_x.x.x_arm64.deb'
   ```
 
-## Clone and Compile the Interface
+### Install Dependencies
 
-Execute the following commands to clone and compile the interface:
+After ROS Noetic Ninjemys has been installed, execute the following commands to install the dependencies.
 
 ```bash
-mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
-git clone https://github.com/MechMindRobotics/mecheye_ros_interface.git
-cd ~/catkin_ws
-catkin_make
+sudo apt install libopencv-dev
+sudo apt install ros-noetic-cv-bridge
+sudo apt install libpcl-dev
+sudo apt install ros-noetic-pcl-conversions
+sudo apt install python3-colcon-common-extensions
 ```
+
+## Clone and Build the Interface
+
+1. Execute the following commands to clone the interface:
+
+   ```bash
+   mkdir -p ~/catkin_ws/src && cd ~/catkin_ws/src
+   git clone https://github.com/MechMindRobotics/mecheye_ros_interface.git
+   ```
+
+2. Execute the following command to set up your environment:
+
+   ```bash
+   source /opt/ros/noetic/setup.bash
+   ```
+
+3. Execute the following commands to build the interface:
+
+   ```bash
+   cd ~/catkin_ws
+   catkin_make
+   ```
 
 ## Use the Interface
 
 1. (Optional) Change the configurations in `~/catkin_ws/src/mecheye_ros_interface/launch/start_camera.launch` according to your needs:
 
    * `save_file`: Set this argument to `true` to allow file saving to the `/tmp/` directory. If you set this argument to `false`, the obtained data are not saved locally automatically.
-   * `camera_ip`: If you want to connect to a specific camera by its IP address, change the value of this argument to the IP address of your camera. You also need to comment and uncomment the corresponding lines in `~/catkin_ws/src/mecheye_ros_interface/src/MechMindCamera.cpp`.
+   * `camera_ip`: If you want to connect to a specific camera by its IP address, change the value of this argument to the IP address of your camera. You also need to the `if (!findAndConnect(camera))` function and uncomment the lines below this function in `~/catkin_ws/src/mecheye_ros_interface/src/MechMindCamera.cpp`.
 
    > Note: Remember to run `catkin_make` again after making changes to the `MechMindCamera.h` and `*.cpp`.
 
 2. Open a terminal and execute the following command to start up the interface:
 
    ```bash
-
    source ~/catkin_ws/devel/setup.bash
    roslaunch mecheye_ros_interface start_camera.launch
    ```
 
 3. Enter the index number of the camera to which you want to connect, and press the Enter key.
-4. Open a new terminal, and execute the following command to invoke a service. Replace `service_name` with the actual name of the service, `parameter_name` with the actual name of the parameter, and `parameter_value` with the actual value of the parameter.
+4. Open a new terminal, and execute the following command to invoke a service. Replace `service_name` with the name of the service, `parameter_name` with the name of the camera parameter, and `parameter_value` with the parameter value to be set.
 
    >Note: For example commands of each service, refer to the [Services](#services) section.
 
@@ -109,25 +103,21 @@ catkin_make
 
 The following topics are provided:
 
-* /mechmind/camera_info: Camera intrinsic parameters.
-* /mechmind/color_image: 2D image encoded as "bgr8".
-* /mechmind/stereo_color_image_left: The left stereo 2D image encoded as "bgr8".
-* /mechmind/stereo_color_image_right: The right stereo 2D image encoded as "bgr8".
-* /mechmind/depth_map: Depth map encoded as a single-channel image, each channel containing a 32-bit float number.
-* /mechmind/point_cloud: Point cloud data.
-* /mechmind/textured_point_cloud: Textured point cloud data.
-
-  > Note: For the DEEP and LSR series, Mech-Eye SDK 2.3.4, the point cloud is not textured correctly when the point cloud unit is set to m. This issue will be fixed in Mech-Eye SDK 2.4.0. As a workaround, you can comment out line 127 in `MechMindCamera.cpp`.
+* /mechmind/camera_info: camera intrinsic parameters
+* /mechmind/color_image: the 2D image encoded as "bgr8"
+* /mechmind/stereo_color_image_left: the left stereo 2D image encoded as "bgr8"
+* /mechmind/stereo_color_image_right: the right stereo 2D image encoded as "bgr8"
+* /mechmind/depth_map: the depth map encoded as a single-channel image, the channel containing a 32-bit float number
+* /mechmind/point_cloud: the untextured point cloud data
+* /mechmind/textured_point_cloud: the textured point cloud data
 
 ## Services
 
-<!-- * Interface functions are described in the online documentation [Mech-Eye API Reference](https://docs.mech-mind.net/latest/en-GB/MechEye/MechEyeAPI/ApiReference/ApiReference.html). -->
+### Acquire Data
 
-### Data Acquisition
+#### [capture_color_image](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorImage.srv)
 
-#### [capture_color_image](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorMap.srv)
-
-Invoke this service to obtain a 2D image.
+Invoke this service to acquire the 2D image.
 
 Example:
 
@@ -137,7 +127,7 @@ rosservice call /capture_color_image
 
 #### [capture_depth_map](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureDepthMap.srv)
 
-Invoke this service to obtain a depth map.
+Invoke this service to acquire the depth map.
 
 Example:
 
@@ -147,7 +137,7 @@ rosservice call /capture_depth_map
 
 #### [capture_point_cloud](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CapturePointCloud.srv)
 
-Invoke this service to obtain an untextured point cloud.
+Invoke this service to acquire the untextured point cloud.
 
 Example:
 
@@ -157,7 +147,7 @@ rosservice call /capture_point_cloud
 
 #### [capture_textured_point_cloud](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorPointCloud.srv)
 
-Invoke this service to obtain a textured point cloud.
+Invoke this service to acquire the textured point cloud.
 
 Example:
 
@@ -167,7 +157,7 @@ rosservice call /capture_textured_point_cloud
 
 #### [capture_stereo_color_images](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureStereoColorMap.srv)
 
-Invoke this service to obtain a stereo 2D image.
+Invoke this service to acquire the stereo 2D images.
 
 >Note: This service is only available for the following models: DEEP, LSR S, LSR L, LSR XL, and PRO XS.
 
@@ -201,7 +191,7 @@ Example:
 
 #### [set_current_user_set](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/SetCurrentUserSet.srv)
 
-Invoke this service to select the parameter group to use.
+Invoke this service to select the parameter group to be used.
 
 This service has one parameter:
 
@@ -259,7 +249,7 @@ Invoke this service to print the following information of the currently connecte
 * Firmware version
 * IP address
 * Subnet mask
-* IP address assigment method
+* IP address assignment method
 * Port
 
 Example:
@@ -270,7 +260,7 @@ Example:
 
 ### Adjust Camera Parameters
 
-> Note: The functions of obtaining and adjusting camera parameter values have been restructured. Mech-Eye SDK 2.3.4 and above provide services according to the data types of the camera parameters. To obtain or adjust the value of a camera parameter, call the service corresponding to the data type of the camera parameter and enter the name of the camera parameter as the service's parameter. The data types and names of the camera parameters can be found in the header files in the installation path of Mech-Eye SDK: `/opt/mech-mind/mech-eye-sdk/include/area_scan_3d_camera/parameters/`.
+> Note: Mech-Eye SDK 2.3.4 and above provide methods according to the data types of the camera parameters, and the ROS 1 interface provides the corresponding services. To obtain or adjust the value of a camera parameter, call the service corresponding to the data type of the camera parameter and input the name of the camera parameter as the service's parameter. The data types and names of the camera parameters can be found in the header files in the installation path of Mech-Eye SDK: `/opt/mech-mind/mech-eye-sdk/include/area_scan_3d_camera/parameters/`.
 
 The following data types of camera parameters are distinguished:
 

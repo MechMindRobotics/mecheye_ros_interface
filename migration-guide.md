@@ -112,7 +112,7 @@ If you are using Mech-Eye SDK 2.0.2 and below, please install the previous relea
 * Version 2.3.4:
 
   ```bash
-  rosservice call /get_enum_parameter "{name: Scan2DExposureMode, value: HDR}"
+  rosservice call /set_enum_parameter "{name: Scan2DExposureMode, value: HDR}"
   ```
 
 #### Get Scan2DHDRExposureSequence
@@ -361,8 +361,6 @@ If you are using Mech-Eye SDK 2.0.2 and below, please install the previous relea
   rosservice call /set_cloud_outlier_filter_mode '!!str Off'
   ```
 
-  >Note: The `Off` option must be surrounded by single quotation marks and have `!!str` in front.
-
 * Version 2.3.4:
 
   ```bash
@@ -392,8 +390,6 @@ If you are using Mech-Eye SDK 2.0.2 and below, please install the previous relea
   ```bash
   rosservice call /set_cloud_smooth_mode '!!str Off'
   ```
-
-  >Note: The `Off` option must be surrounded by single quotation marks and have `!!str` in front.
 
 * Version 2.3.4:
 
@@ -620,8 +616,6 @@ If you are using Mech-Eye SDK 2.0.2 and below, please install the previous relea
   ```bash
   rosservice call /set_projector_anti_flicker_mode '!!str Off'
   ```
-
-  >Note: The `Off` option must be surrounded by single quotation marks and have `!!str` in front.
 
 * Version 2.3.4:
 

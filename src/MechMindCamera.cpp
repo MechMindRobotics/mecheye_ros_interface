@@ -2,12 +2,11 @@
 #include <area_scan_3d_camera/api_util.h>
 #include <sstream>
 #include <opencv2/imgcodecs.hpp>
-#include <opencv2/calib3d.hpp>
 #include <std_msgs/String.h>
 
 namespace {
 
-sensor_msgs::PointField createPointField(std::string name, uint32_t offset, uint8_t datatype,
+sensor_msgs::PointField createPointField(const std::string& name, uint32_t offset, uint8_t datatype,
                                          uint32_t count)
 {
     sensor_msgs::PointField point_field;

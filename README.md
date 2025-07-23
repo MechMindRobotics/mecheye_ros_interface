@@ -115,7 +115,7 @@ The following topics are provided:
 
 ### Acquire Data
 
-#### [capture_color_image](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorImage.srv)
+#### [capture_color_image](https://github.com/MechMindRobotics/mecheye_ros_interface/blob/master/srv/CaptureColorMap.srv)
 
 Invoke this service to acquire the 2D image.
 
